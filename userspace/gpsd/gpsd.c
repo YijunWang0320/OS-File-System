@@ -36,28 +36,34 @@ int main(int argc, char *argv[])
 	while(1) {
 		fp = fopen("/data/media/0/gps_location.txt", "rt");
 		read = getline(&line, &len, fp);
-		if (read != -1)
+		if (read != -1){
 			gpsl->latitude = strtod(line, NULL);
+			printf("latitude: %s\n", line);
+		}
 		else 
 			break;
 
-		if (read != -1)
-			gpsl->longtitude = strtod(line, NULL);
+		if (read != -1) {
+			gpsl->longitude = strtod(line, NULL);
+			printf("latitude: %s\n", line);
+		}
 		else 
 			break;
 
-		if (read != -1)
+		if (read != -1) {
 			gpsl->accuracy = strtof(line, NULL);
+			printf("latitude: %s\n", line);
+		}
 		else 
 			break;
 
-j		int ret = set_gps_location(gpsl);
+		int ret = set_gps_location(gpsl);
 		fclose(fp);
 		sleep(1);
 	}
 
 	printf("while break because of error read. \n");
-	
+
 	return 0;
 }
 
