@@ -58,6 +58,10 @@ int main(int argc, char *argv[])
 			break;
 
 		int ret = set_gps_location(gpsl);
+		if (ret == 0)
+			printf("syscall success.\n");
+		else
+			printf("syscall fail.\n");
 		fclose(fp);
 		sleep(1);
 	}
