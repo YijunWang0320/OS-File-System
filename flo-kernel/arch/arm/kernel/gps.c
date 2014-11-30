@@ -4,6 +4,11 @@
 #include <linux/uaccess.h>
 struct gps_location *local_kernel;
 
+static void __init init_local_kernel(void)
+{
+	local_kernel = (struct gps_location *)kmalloc(sizeof(struct gps_location), GFP_KERNEL);
+}
+
 SYSCALL_DEFINE(set_gps_location) (struct gps_location *loc) {
 	struct gps_location *tmp_loc_kernel = (struct gps_location *)kmalloc(sizeof(struct gps_location), GFP_KERNEL);
 	int ret = copy_from_user(&tmp_loc_kernel, loc, sizeof(struct gps_location));
@@ -20,3 +25,5 @@ SYSCALL_DEFINE(set_gps_location) (struct gps_location *loc) {
 
 	return 10;
 }
+
+module_init(init_local_kernel);
