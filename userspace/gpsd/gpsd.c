@@ -35,6 +35,11 @@ int main(int argc, char *argv[])
 	ssize_t read;
 	while(1) {
 		fp = fopen("/data/media/0/gps_location.txt", "rt");
+		if (fp == NULL)
+			printf("fp == NULL!\n");
+		else 
+			printf("fp != NULL\n");
+		
 		read = getline(&line, &len, fp);
 		if (read != -1){
 			gpsl->latitude = strtod(line, NULL);
