@@ -1665,6 +1665,8 @@ struct inode_operations {
 	void (*truncate_range)(struct inode *, loff_t, loff_t);
 	int (*fiemap)(struct inode *, struct fiemap_extent_info *, u64 start,
 		      u64 len);
+	// int (*set_gps_location)(struct inode *);
+	// int (*get_gps_location)(struct inode *, struct gps_location *);
 } ____cacheline_aligned;
 
 struct seq_file;
