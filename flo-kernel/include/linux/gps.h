@@ -4,4 +4,4 @@ struct gps_location {
 	float  accuracy;  /* in meters */
 };
 
-gps_location loc_kernel;
+struct gps_location loc_kernel;

@@ -5,7 +5,7 @@
 extern gps_location loc_kernel;
 
 SYSCALL_DEFINE(set_gps_location) (struct gps_location *loc) {
-	gps_location tmp_loc_kernel = malloc(sizeof(struct gps_location));
+	struct gps_location tmp_loc_kernel = malloc(sizeof(struct gps_location));
 	int ret = copy_from_user(&tmp_loc_kernel, loc, sizeof(struct gps_location));
 	if(ret != 0)
 		return -1;
