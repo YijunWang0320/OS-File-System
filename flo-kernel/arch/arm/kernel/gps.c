@@ -8,12 +8,12 @@ SYSCALL_DEFINE(set_gps_location) (struct gps_location *loc) {
 	if(ret != 0)
 		return -1;
 
-	loc_kernel->latitude = tmp_loc_kernel->latitude;
-	printk("pass latitude, loc_kernel is %f, tmp_loc_kernel is %f \n", loc_kernel->latitude, tmp_loc_kernel->latitude);
-	loc_kernel->longitude = tmp_loc_kernel->longitude;
-	printk("pass longitude, loc_kernel is %f, tmp_loc_kernel is %f \n", loc_kernel->longitude, tmp_loc_kernel->longitude);
-	loc_kernel->accuracy = tmp_loc_kernel->accuracy;
-	printk("pass accuracy, loc_kernel is %f, tmp_loc_kernel is %f \n", loc_kernel->accuracy, tmp_loc_kernel->accuracy);
+	local_kernel->latitude = tmp_loc_kernel->latitude;
+	printk("pass latitude, loc_kernel is %f, tmp_loc_kernel is %f \n", local_kernel->latitude, tmp_loc_kernel->latitude);
+	local_kernel->longitude = tmp_loc_kernel->longitude;
+	printk("pass longitude, loc_kernel is %f, tmp_loc_kernel is %f \n", local_kernel->longitude, tmp_loc_kernel->longitude);
+	local_kernel->accuracy = tmp_loc_kernel->accuracy;
+	printk("pass accuracy, loc_kernel is %f, tmp_loc_kernel is %f \n", local_kernel->accuracy, tmp_loc_kernel->accuracy);
 
 
 	return 10;
