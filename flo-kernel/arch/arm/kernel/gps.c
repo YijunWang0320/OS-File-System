@@ -2,8 +2,6 @@
 #include <linux/unistd.h>
 #include <linux/gps.h>
 
-extern gps_location loc_kernel;
-
 SYSCALL_DEFINE(set_gps_location) (struct gps_location *loc) {
 	struct gps_location tmp_loc_kernel = malloc(sizeof(struct gps_location));
 	int ret = copy_from_user(&tmp_loc_kernel, loc, sizeof(struct gps_location));
