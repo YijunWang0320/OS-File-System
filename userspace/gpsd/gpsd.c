@@ -47,14 +47,14 @@ int main(int argc, char *argv[])
 		}
 		else 
 			break;
-
+		read = getline(&line, &len, fp);
 		if (read != -1) {
 			gpsl->longitude = strtod(line, NULL);
 			printf("latitude: %s\n", line);
 		}
 		else 
 			break;
-
+		read = getline(&line, &len, fp);
 		if (read != -1) {
 			gpsl->accuracy = strtof(line, NULL);
 			printf("latitude: %s\n", line);
