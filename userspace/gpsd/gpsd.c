@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include "gpsd.h"
 
 int main(int argc, char *argv[])
 {
 	FILE *fp= NULL;
-	gps_location * gpsl;
+	struct gps_location * gpsl;
 	pid_t pid = 0;
 	pid_t sid = 0;
 	pid = fork();
@@ -34,18 +36,28 @@ int main(int argc, char *argv[])
 	while(1) {
 		fp = fopen("/data/media/0/gps_location.txt", "rt");
 		read = getline(&line, &len, fp);
-		gpsl->latitude = strtod(line, NULL);
+		if (read != -1)
+			gpsl->latitude = strtod(line, NULL);
+		else 
+			break;
 
-		read = getline(&line, &len, fp);
-		gpsl->longtitude = strtod(line, NULL);
+		if (read != -1)
+			gpsl->longtitude = strtod(line, NULL);
+		else 
+			break;
 
-		read = getline(&line, &len, fp);
-		gpsl->accuracy = strtof(line, NULL);
+		if (read != -1)
+			gpsl->accuracy = strtof(line, NULL);
+		else 
+			break;
 
 j		int ret = set_gps_location(gpsl);
 		fclose(fp);
 		sleep(1);
 	}
+
+	printf("while break because of error read. \n");
+	
 	return 0;
 }
 
