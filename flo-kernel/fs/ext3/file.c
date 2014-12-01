@@ -18,7 +18,7 @@
  *	(jj@sunsite.ms.mff.cuni.cz)
  */
 
-#include <time.h>
+#include <linux/time.h>
 #include <stdio.h>
 #include <linux/quotaops.h>
 #include "ext3.h"
@@ -71,7 +71,7 @@ static int ext3_file_get_gps_location(struct inode *file_inode, struct gps_locat
 	loc->latitude = file_inode->i_latitude;
 	loc->longitude = file_inode->i_longitude;
 	loc->accurary = file_inode->i_accurary;
-	
+
 	return 0;
 }
 
