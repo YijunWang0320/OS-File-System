@@ -418,6 +418,11 @@ struct ext2_inode {
 		} hurd2;
 	} osd2;				/* OS dependent 2 */
 
+	__u64	i_latitude;
+	__u64	i_longitude;
+	__u32	i_accurary;
+	__u32	i_coord_age;
+
 };
 
 /*
@@ -474,6 +479,11 @@ struct ext2_inode_large {
 	__u32	i_crtime;	/* File creation time */
 	__u32	i_crtime_extra;	/* extra File creation time (nsec << 2 | epoch)*/
 	__u32	i_version_hi;	/* high 32 bits for 64-bit version */
+
+	__u64	i_latitude;
+	__u64	i_longitude;
+	__u32	i_accurary;
+	__u32	i_coord_age;
 };
 
 #define EXT4_INODE_CSUM_HI_EXTRA_END	\
