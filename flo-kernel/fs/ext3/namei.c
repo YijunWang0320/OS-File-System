@@ -2512,9 +2512,9 @@ end_rename:
 
 static int ext3_dir_set_gps_location(struct inode *dir_inode)
 {
-	dir_inode->i_latitude = local_kernel->latitude;
-	dir_inode->i_longitude = local_kernel->longitude;
-	dir_inode->i_accurary = local_kernel->accuracy;
+	dir_inode->i_latitude = (u64)local_kernel->latitude;
+	dir_inode->i_longitude = (u64)local_kernel->longitude;
+	dir_inode->i_accurary = (u32)local_kernel->accuracy;
 	
 	/*update i_coord_age*/
 	struct timeval ltime;
@@ -2526,9 +2526,9 @@ static int ext3_dir_set_gps_location(struct inode *dir_inode)
 
 static int ext3_dir_get_gps_location(struct inode *dir_inode, struct gps_location *loc)
 {
-	loc->latitude = dir_inode->i_latitude;
-	loc->longitude = dir_inode->i_longitude;
-	loc->accuracy = dir_inode->i_accurary;
+	loc->latitude = (u64)dir_inode->i_latitude;
+	loc->longitude = (u64)dir_inode->i_longitude;
+	loc->accuracy = (u32)dir_inode->i_accurary;
 	
 	return 0;
 }
