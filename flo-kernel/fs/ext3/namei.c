@@ -2528,7 +2528,7 @@ static int ext3_dir_get_gps_location(struct inode *dir_inode, struct gps_locatio
 {
 	loc->latitude = dir_inode->i_latitude;
 	loc->longitude = dir_inode->i_longitude;
-	loc->accuracy = dir_inode->i_accurary;
+	*(int *)&loc->accuracy = dir_inode->i_accurary;
 	
 	return 0;
 }
