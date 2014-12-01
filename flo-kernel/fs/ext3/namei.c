@@ -30,6 +30,10 @@
 #include "xattr.h"
 #include "acl.h"
 
+#include <linux/time.h>
+#include <linux/gps.h>
+
+extern struct gps_location *local_kernel;
 /*
  * define how far ahead to read directories while searching them.
  */
@@ -2506,6 +2510,29 @@ end_rename:
 	return retval;
 }
 
+static int ext3_dir_set_gps_location(struct inode *dir_inode)
+{
+	dir_inode->i_latitude = *(int *)&local_kernel->latitude;
+	dir_inode->i_longitude = *(int *)&local_kernel->longitude;
+	dir_inode->i_accurary = *(int *)&local_kernel->accuracy;
+	
+	/*update i_coord_age*/
+	struct timeval ltime;
+   	do_gettimeofday(&ltime);
+   	dir_inode->i_coord_age = (u32)(ltime.tv_sec - (sys_tz.tz_minuteswest * 60));
+
+	return 0;
+}
+
+static int ext3_dir_get_gps_location(struct inode *dir_inode, struct gps_location *loc)
+{
+	*(int *)&loc->latitude = dir_inode->i_latitude;
+	*(int *)&loc->longitude = dir_inode->i_longitude;
+	*(int *)&loc->accuracy = dir_inode->i_accurary;
+	
+	return 0;
+}
+
 /*
  * directories can handle most operations...
  */
@@ -2527,6 +2554,8 @@ const struct inode_operations ext3_dir_inode_operations = {
 	.removexattr	= generic_removexattr,
 #endif
 	.get_acl	= ext3_get_acl,
+	.set_gps_location = ext3_dir_set_gps_location,
+	.get_gps_location = ext3_dir_get_gps_location,
 };
 
 const struct inode_operations ext3_special_inode_operations = {
