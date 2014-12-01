@@ -25,6 +25,9 @@
 #include "acl.h"
 #include <linux/gps.h>
 
+typedef  __u32 float;
+typedef  __u64 double;
+
 extern struct gps_location *local_kernel;
 
 /*
@@ -54,7 +57,7 @@ static int ext3_release_file (struct inode * inode, struct file * filp)
 
 static int ext3_file_set_gps_location(struct inode *file_inode)
 {
-	file_inode->i_latitude = *(int *)&local_kernel->latitude;
+	file_inode->i_latitude = local_kernel->latitude;
 	file_inode->i_longitude = *(int *)&local_kernel->longitude;
 	file_inode->i_accurary = *(int *)&local_kernel->accuracy;
 	
