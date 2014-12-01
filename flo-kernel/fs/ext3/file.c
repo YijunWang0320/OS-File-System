@@ -23,6 +23,7 @@
 #include "ext3.h"
 #include "xattr.h"
 #include "acl.h"
+#include <linux/gps.h>
 
 extern struct gps_location *local_kernel;
 
