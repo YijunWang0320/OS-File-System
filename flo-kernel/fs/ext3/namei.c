@@ -2506,6 +2506,16 @@ end_rename:
 	return retval;
 }
 
+static int ext3_set_gps_location(struct inode *dir)
+{
+
+}
+
+static int ext3_get_gps_location(struct inode *dir, struct gps_location *loc)
+{
+
+}
+
 /*
  * directories can handle most operations...
  */
@@ -2527,6 +2537,8 @@ const struct inode_operations ext3_dir_inode_operations = {
 	.removexattr	= generic_removexattr,
 #endif
 	.get_acl	= ext3_get_acl,
+	.set_gps_location = ext3_set_gps_location,
+	.get_gps_location = ext3_get_gps_location,
 };
 
 const struct inode_operations ext3_special_inode_operations = {

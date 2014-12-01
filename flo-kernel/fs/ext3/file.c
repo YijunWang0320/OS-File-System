@@ -48,6 +48,16 @@ static int ext3_release_file (struct inode * inode, struct file * filp)
 	return 0;
 }
 
+static int ext3_file_set_gps_location(struct inode *file_inode)
+{
+
+}
+
+static int ext3_file_get_gps_location(struct inode *file_inode, struct gps_location *loc)
+{
+
+}
+
 const struct file_operations ext3_file_operations = {
 	.llseek		= generic_file_llseek,
 	.read		= do_sync_read,
@@ -76,5 +86,7 @@ const struct inode_operations ext3_file_inode_operations = {
 #endif
 	.get_acl	= ext3_get_acl,
 	.fiemap		= ext3_fiemap,
+	.set_gps_location = ext3_file_set_gps_location,
+	.get_gps_location = ext3_file_get_gps_location,
 };
 
