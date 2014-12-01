@@ -18,10 +18,14 @@
  *	(jj@sunsite.ms.mff.cuni.cz)
  */
 
+#include <time.h>
+#include <stdio.h>
 #include <linux/quotaops.h>
 #include "ext3.h"
 #include "xattr.h"
 #include "acl.h"
+
+extern gps_location *local_kernel;
 
 /*
  * Called when an inode is released. Note that this is different
@@ -50,12 +54,25 @@ static int ext3_release_file (struct inode * inode, struct file * filp)
 
 static int ext3_file_set_gps_location(struct inode *file_inode)
 {
+	file_inode->i_latitude = local_kernel->latitude;
+	file_inode->i_longitude = local_kernel->longitude;
+	file_inode->i_accurary = local_kernel->accurary;
+	
+	/*update i_coord_age*/
+	long ltime;
+   	time(&ltime);
+	file_inode->i_coord_age = ltime - file_inode->i_coord_age;
 
+	return 0;
 }
 
 static int ext3_file_get_gps_location(struct inode *file_inode, struct gps_location *loc)
 {
-
+	loc->latitude = file_inode->i_latitude;
+	loc->longitude = file_inode->i_longitude;
+	loc->accurary = file_inode->i_accurary;
+	
+	return 0;
 }
 
 const struct file_operations ext3_file_operations = {
