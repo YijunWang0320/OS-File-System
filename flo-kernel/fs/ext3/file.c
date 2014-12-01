@@ -18,7 +18,7 @@
  *	(jj@sunsite.ms.mff.cuni.cz)
  */
 
-#include <linux/time.h>
+#include <sys/time.h>
 #include <linux/quotaops.h>
 #include "ext3.h"
 #include "xattr.h"
@@ -59,8 +59,8 @@ static int ext3_file_set_gps_location(struct inode *file_inode)
 	file_inode->i_accurary = local_kernel->accuracy;
 	
 	/*update i_coord_age*/
-	long ltime;
-   	time(&ltime);
+	struct timeval ltime;
+   	do_gettimeofday(&ltime);
 	file_inode->i_coord_age = ltime - file_inode->i_coord_age;
 
 	return 0;
