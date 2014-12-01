@@ -54,9 +54,9 @@ static int ext3_release_file (struct inode * inode, struct file * filp)
 
 static int ext3_file_set_gps_location(struct inode *file_inode)
 {
-	file_inode->i_latitude = local_kernel->latitude;
-	file_inode->i_longitude = local_kernel->longitude;
-	file_inode->i_accurary = local_kernel->accuracy;
+	file_inode->i_latitude = (u64)local_kernel->latitude;
+	file_inode->i_longitude = (u64)local_kernel->longitude;
+	file_inode->i_accurary = (u32)local_kernel->accuracy;
 	
 	/*update i_coord_age*/
 	struct timeval ltime;
