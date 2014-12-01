@@ -18,7 +18,7 @@
  *	(jj@sunsite.ms.mff.cuni.cz)
  */
 
-#include <sys/time.h>
+#include <linux/time.h>
 #include <linux/quotaops.h>
 #include "ext3.h"
 #include "xattr.h"
