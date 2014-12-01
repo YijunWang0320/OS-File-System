@@ -30,7 +30,7 @@
 #include "xattr.h"
 #include "acl.h"
 
-#include <time.h>
+#include <linux/time.h>
 #include <stdio.h>
 extern gps_location *local_kernel;
 /*
