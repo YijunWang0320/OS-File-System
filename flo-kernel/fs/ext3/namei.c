@@ -31,7 +31,9 @@
 #include "acl.h"
 
 #include <linux/time.h>
-extern gps_location *local_kernel;
+#include <linux/gps.h>
+
+extern struct gps_location *local_kernel;
 /*
  * define how far ahead to read directories while searching them.
  */
@@ -2515,9 +2517,9 @@ static int ext3_dir_set_gps_location(struct inode *dir_inode)
 	dir_inode->i_accurary = local_kernel->accurary;
 	
 	/*update i_coord_age*/
-	long ltime;
-   	time(&ltime);
-	dir_inode->i_coord_age = ltime - dir_inode->i_coord_age;
+	struct timeval ltime;
+   	do_gettimeofday(&ltime);
+   	dir_inode->i_coord_age = (u32)(ltime.tv_sec - (sys_tz.tz_minuteswest * 60));
 
 	return 0;
 }
