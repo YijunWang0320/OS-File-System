@@ -24,7 +24,7 @@
 #include "xattr.h"
 #include "acl.h"
 
-extern gps_location *local_kernel;
+extern struct gps_location *local_kernel;
 
 /*
  * Called when an inode is released. Note that this is different
