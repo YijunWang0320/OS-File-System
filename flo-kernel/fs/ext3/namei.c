@@ -31,7 +31,6 @@
 #include "acl.h"
 
 #include <linux/time.h>
-#include <stdio.h>
 extern gps_location *local_kernel;
 /*
  * define how far ahead to read directories while searching them.

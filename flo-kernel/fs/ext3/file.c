@@ -19,7 +19,6 @@
  */
 
 #include <linux/time.h>
-#include <stdio.h>
 #include <linux/quotaops.h>
 #include "ext3.h"
 #include "xattr.h"
