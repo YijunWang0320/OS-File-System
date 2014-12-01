@@ -56,7 +56,7 @@ static int ext3_file_set_gps_location(struct inode *file_inode)
 {
 	file_inode->i_latitude = local_kernel->latitude;
 	file_inode->i_longitude = local_kernel->longitude;
-	file_inode->i_accurary = local_kernel->accurary;
+	file_inode->i_accurary = local_kernel->accuracy;
 	
 	/*update i_coord_age*/
 	long ltime;
@@ -70,7 +70,7 @@ static int ext3_file_get_gps_location(struct inode *file_inode, struct gps_locat
 {
 	loc->latitude = file_inode->i_latitude;
 	loc->longitude = file_inode->i_longitude;
-	loc->accurary = file_inode->i_accurary;
+	loc->accuracy = file_inode->i_accurary;
 
 	return 0;
 }
