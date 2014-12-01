@@ -418,6 +418,7 @@ struct kstatfs;
 struct vm_area_struct;
 struct vfsmount;
 struct cred;
+struct gps_location;
 
 extern void __init inode_init(void);
 extern void __init inode_init_early(void);
@@ -1665,8 +1666,8 @@ struct inode_operations {
 	void (*truncate_range)(struct inode *, loff_t, loff_t);
 	int (*fiemap)(struct inode *, struct fiemap_extent_info *, u64 start,
 		      u64 len);
-	// int (*set_gps_location)(struct inode *);
-	// int (*get_gps_location)(struct inode *, struct gps_location *);
+	int (*set_gps_location)(struct inode *);
+	int (*get_gps_location)(struct inode *, struct gps_location *);
 } ____cacheline_aligned;
 
 struct seq_file;
