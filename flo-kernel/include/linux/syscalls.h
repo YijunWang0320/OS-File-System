@@ -75,6 +75,7 @@ struct file_handle;
 #include <linux/unistd.h>
 #include <linux/quota.h>
 #include <linux/key.h>
+#include <linux/gps.h>
 #include <trace/syscall.h>
 
 #define __SC_DECL1(t1, a1)	t1 a1

@@ -18,10 +18,17 @@
  *	(jj@sunsite.ms.mff.cuni.cz)
  */
 
+#include <linux/time.h>
 #include <linux/quotaops.h>
 #include "ext3.h"
 #include "xattr.h"
 #include "acl.h"
+#include <linux/gps.h>
+
+// typedef  __u32 float;
+// typedef  __u64 double;
+
+extern struct gps_location *local_kernel;
 
 /*
  * Called when an inode is released. Note that this is different
@@ -44,6 +51,29 @@ static int ext3_release_file (struct inode * inode, struct file * filp)
 	}
 	if (is_dx(inode) && filp->private_data)
 		ext3_htree_free_dir_info(filp->private_data);
+
+	return 0;
+}
+
+static int ext3_file_set_gps_location(struct inode *file_inode)
+{
+	file_inode->i_latitude = *(int *)&local_kernel->latitude;
+	file_inode->i_longitude = *(int *)&local_kernel->longitude;
+	file_inode->i_accurary = *(int *)&local_kernel->accuracy;
+	
+	/*update i_coord_age*/
+	struct timeval ltime;
+   	do_gettimeofday(&ltime);
+   	file_inode->i_coord_age = (u32)(ltime.tv_sec - (sys_tz.tz_minuteswest * 60));
+
+	return 0;
+}
+
+static int ext3_file_get_gps_location(struct inode *file_inode, struct gps_location *loc)
+{
+	*(int *)&loc->latitude = file_inode->i_latitude;
+	*(int *)&loc->longitude = file_inode->i_longitude;
+	*(int *)&loc->accuracy = file_inode->i_accurary;
 
 	return 0;
 }
@@ -76,5 +106,7 @@ const struct inode_operations ext3_file_inode_operations = {
 #endif
 	.get_acl	= ext3_get_acl,
 	.fiemap		= ext3_fiemap,
+	.set_gps_location = ext3_file_set_gps_location,
+	.get_gps_location = ext3_file_get_gps_location,
 };
 
