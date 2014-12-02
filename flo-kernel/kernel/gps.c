@@ -27,4 +27,9 @@ SYSCALL_DEFINE(set_gps_location) (struct gps_location *loc) {
 	return 10;
 }
 
+SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
+	struct gps_location __user *, loc) {
+	return 0;
+}
+
 module_init(init_local_kernel);
