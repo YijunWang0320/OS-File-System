@@ -849,11 +849,6 @@ struct inode {
 	atomic_t		i_readcount; /* struct files open RO */
 #endif
 	void			*i_private; /* fs or device private pointer */
-
-	__u64	i_latitude;
-	__u64	i_longitude;
-	__u32	i_accurary;
-	__u32	i_coord_age;
 };
 
 static inline int inode_unhashed(struct inode *inode)
