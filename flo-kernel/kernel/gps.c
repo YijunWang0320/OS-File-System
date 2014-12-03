@@ -29,7 +29,7 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	struct gps_location loc_k;
 	char *pathname_k;
 
-	pathname_k = kmalloc(PATH_MAX+1, sizeof(char), GFP_KERNEL);
+	pathname_k = kmalloc((PATH_MAX+1)*sizeof(char), GFP_KERNEL);
 
 	return 0;
 }
