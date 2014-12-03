@@ -1316,6 +1316,8 @@ static int add_dirent_to_buf(handle_t *handle, struct dentry *dentry,
 	 * and/or different from the directory change time.
 	 */
 	dir->i_mtime = dir->i_ctime = CURRENT_TIME_SEC;
+	dir->set_gps_location(dir);
+
 	ext3_update_dx_flag(dir);
 	dir->i_version++;
 	ext3_mark_inode_dirty(handle, dir);
@@ -2118,6 +2120,7 @@ static int ext3_rmdir (struct inode * dir, struct dentry *dentry)
 	inode->i_size = 0;
 	ext3_orphan_add(handle, inode);
 	inode->i_ctime = dir->i_ctime = dir->i_mtime = CURRENT_TIME_SEC;
+	inode->set_gps_location(inode);
 	ext3_mark_inode_dirty(handle, inode);
 	drop_nlink(dir);
 	ext3_update_dx_flag(dir);
@@ -2171,12 +2174,14 @@ static int ext3_unlink(struct inode * dir, struct dentry *dentry)
 	if (retval)
 		goto end_unlink;
 	dir->i_ctime = dir->i_mtime = CURRENT_TIME_SEC;
+	dir->set_gps_location(dir);
 	ext3_update_dx_flag(dir);
 	ext3_mark_inode_dirty(handle, dir);
 	drop_nlink(inode);
 	if (!inode->i_nlink)
 		ext3_orphan_add(handle, inode);
 	inode->i_ctime = dir->i_ctime;
+	inode->set_gps_location(inode);
 	ext3_mark_inode_dirty(handle, inode);
 	retval = 0;
 
@@ -2314,6 +2319,7 @@ retry:
 		handle->h_sync = 1;
 
 	inode->i_ctime = CURRENT_TIME_SEC;
+	inode->set_gps_location(inode);
 	inc_nlink(inode);
 	ihold(inode);
 
@@ -2417,6 +2423,7 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 			new_de->file_type = old_de->file_type;
 		new_dir->i_version++;
 		new_dir->i_ctime = new_dir->i_mtime = CURRENT_TIME_SEC;
+		new_dir->set_gps_location(new_dir);
 		ext3_mark_inode_dirty(handle, new_dir);
 		BUFFER_TRACE(new_bh, "call ext3_journal_dirty_metadata");
 		retval = ext3_journal_dirty_metadata(handle, new_bh);
@@ -2431,6 +2438,7 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 	 * rename.
 	 */
 	old_inode->i_ctime = CURRENT_TIME_SEC;
+	old_inode->set_gps_location(old_inode);
 	ext3_mark_inode_dirty(handle, old_inode);
 
 	/*
@@ -2465,8 +2473,10 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 	if (new_inode) {
 		drop_nlink(new_inode);
 		new_inode->i_ctime = CURRENT_TIME_SEC;
+		new_inode->set_gps_location(new_inode);
 	}
 	old_dir->i_ctime = old_dir->i_mtime = CURRENT_TIME_SEC;
+	old_dir->set_gps_location(old_dir);
 	ext3_update_dx_flag(old_dir);
 	if (dir_bh) {
 		BUFFER_TRACE(dir_bh, "get_write_access");
@@ -2520,7 +2530,7 @@ static int ext3_dir_set_gps_location(struct inode *dir_inode)
 	/*update i_coord_age*/
 	struct timeval ltime;
    	do_gettimeofday(&ltime);
-   	ei->i_coord_age = (u32)(ltime.tv_sec - (sys_tz.tz_minuteswest * 60));
+   	ei->i_coord_age = (u32)(ltime.tv_sec - (sys_tz.tz_minuteswest * 60))-ei->i_coord_age;
 
 	return 0;
 }

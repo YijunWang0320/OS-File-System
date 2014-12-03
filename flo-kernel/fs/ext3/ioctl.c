@@ -94,7 +94,7 @@ long ext3_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
 		ext3_set_inode_flags(inode);
 		inode->i_ctime = CURRENT_TIME_SEC;
-
+		inode->set_gps_location(inode);
 		err = ext3_mark_iloc_dirty(handle, inode, &iloc);
 flags_err:
 		ext3_journal_stop(handle);
@@ -138,6 +138,7 @@ flags_out:
 		err = ext3_reserve_inode_write(handle, inode, &iloc);
 		if (err == 0) {
 			inode->i_ctime = CURRENT_TIME_SEC;
+			inode->set_gps_location(inode);
 			inode->i_generation = generation;
 			err = ext3_mark_iloc_dirty(handle, inode, &iloc);
 		}
