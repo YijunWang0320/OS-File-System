@@ -789,6 +789,7 @@ static int ext3_splice_branch(handle_t *handle, struct inode *inode,
 	now = CURRENT_TIME_SEC;
 	if (!timespec_equal(&inode->i_ctime, &now) || !where->bh) {
 		inode->i_ctime = now;
+		inode->i_op->set_gps_location(inode);
 		ext3_mark_inode_dirty(handle, inode);
 	}
 	/* ext3_mark_inode_dirty already updated i_sync_tid */
@@ -2647,6 +2648,7 @@ do_indirects:
 
 	mutex_unlock(&ei->truncate_mutex);
 	inode->i_mtime = inode->i_ctime = CURRENT_TIME_SEC;
+	inode->i_op->set_gps_location(inode);
 	ext3_mark_inode_dirty(handle, inode);
 
 	/*
@@ -2923,6 +2925,11 @@ struct inode *ext3_iget(struct super_block *sb, unsigned long ino)
 	ei->i_state_flags = 0;
 	ei->i_dir_start_lookup = 0;
 	ei->i_dtime = le32_to_cpu(raw_inode->i_dtime);
+	/* when get from disk to memory, set gps info from ext_inode to info */
+	ei->i_latitude = le64_to_cpu(raw_inode->i_latitude);
+	ei->i_longitude = le64_to_cpu(raw_inode->i_longitude);
+	ei->i_accuracy = le32_to_cpu(raw_inode->i_accuracy);
+	ei->i_coord_age = le32_to_cpu(raw_inode->i_coord_age);
 	/* We now have enough fields to check if the inode was active or not.
 	 * This is needed because nfsd might try to access dead inodes
 	 * the test is that same one that e2fsck uses
@@ -3112,6 +3119,11 @@ again:
 	raw_inode->i_blocks = cpu_to_le32(inode->i_blocks);
 	raw_inode->i_dtime = cpu_to_le32(ei->i_dtime);
 	raw_inode->i_flags = cpu_to_le32(ei->i_flags);
+
+	raw_inode->i_latitude = cpu_to_le64(ei->i_latitude);
+	raw_inode->i_longitude = cpu_to_le64(ei->i_longitude);
+	raw_inode->i_accuracy = cpu_to_le32(ei->i_accuracy);
+	raw_inode->i_coord_age = cpu_to_le32(ei->i_coord_age);
 #ifdef EXT3_FRAGMENTS
 	raw_inode->i_faddr = cpu_to_le32(ei->i_faddr);
 	raw_inode->i_frag = ei->i_frag_no;

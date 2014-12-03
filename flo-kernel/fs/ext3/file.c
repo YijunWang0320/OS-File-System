@@ -57,23 +57,25 @@ static int ext3_release_file (struct inode * inode, struct file * filp)
 
 static int ext3_file_set_gps_location(struct inode *file_inode)
 {
-	file_inode->i_latitude = *(int *)&local_kernel->latitude;
-	file_inode->i_longitude = *(int *)&local_kernel->longitude;
-	file_inode->i_accurary = *(int *)&local_kernel->accuracy;
+	struct ext3_inode_info *ei = EXT3_I(file_inode);
+	ei->i_latitude = *(unsigned long long *)&local_kernel->latitude;
+	ei->i_longitude = *(unsigned long long *)&local_kernel->longitude;
+	ei->i_accuracy = *(unsigned int *)&local_kernel->accuracy;
 	
 	/*update i_coord_age*/
 	struct timeval ltime;
    	do_gettimeofday(&ltime);
-   	file_inode->i_coord_age = (u32)(ltime.tv_sec - (sys_tz.tz_minuteswest * 60));
+   	ei->i_coord_age = (u32)(ltime.tv_sec - (sys_tz.tz_minuteswest * 60))-ei->i_coord_age;
 
 	return 0;
 }
 
 static int ext3_file_get_gps_location(struct inode *file_inode, struct gps_location *loc)
 {
-	*(int *)&loc->latitude = file_inode->i_latitude;
-	*(int *)&loc->longitude = file_inode->i_longitude;
-	*(int *)&loc->accuracy = file_inode->i_accurary;
+	struct ext3_inode_info *ei = EXT3_I(file_inode);
+	*(unsigned long long *)&loc->latitude = ei->i_latitude;
+	*(unsigned long long *)&loc->longitude = ei->i_longitude;
+	*(unsigned int *)&loc->accuracy = ei->i_accuracy;
 
 	return 0;
 }
