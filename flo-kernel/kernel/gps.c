@@ -63,7 +63,7 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	if (cpy_ret < 0) {
 		kfree(pathname_k);
 		return -EFAULT;
-	} else if (ret >= PATH_MAX + 1) {
+	} else if (cpy_ret >= PATH_MAX + 1) {
 		kfree(pathname_k);
 		return -EINVAL;
 	}
