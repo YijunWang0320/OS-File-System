@@ -73,7 +73,7 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	if (IS_ERR(kfile))
 		return -EINVAL;
 	struct inode *filenode;
-	filenode = fdentry(kfile)->d_inode;
+	filenode = kfile->f_path.dentry->d_inode;
 
 	int getret;
 	if (filenode == NULL)
