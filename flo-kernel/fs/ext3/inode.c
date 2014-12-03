@@ -3121,7 +3121,7 @@ again:
 	raw_inode->i_flags = cpu_to_le32(ei->i_flags);
 
 	raw_inode->i_latitude = cpu_to_le64(ei->i_latitude);
-	raw_inode->i_longitude = cpu_to_le64(ei-i_longitude);
+	raw_inode->i_longitude = cpu_to_le64(ei->i_longitude);
 	raw_inode->i_accuracy = cpu_to_le32(ei->i_accuracy);
 	raw_inode->i_coord_age = cpu_to_le32(ei->i_coord_age);
 #ifdef EXT3_FRAGMENTS
