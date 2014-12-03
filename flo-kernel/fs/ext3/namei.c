@@ -2512,23 +2512,25 @@ end_rename:
 
 static int ext3_dir_set_gps_location(struct inode *dir_inode)
 {
-	dir_inode->i_latitude = *(int *)&local_kernel->latitude;
-	dir_inode->i_longitude = *(int *)&local_kernel->longitude;
-	dir_inode->i_accurary = *(int *)&local_kernel->accuracy;
+	struct ext3_inode_info *ei = EXT3_I(dir_inode);
+	ei->i_latitude = *(double *)&local_kernel->latitude;
+	ei->i_longitude = *(double *)&local_kernel->longitude;
+	ei->i_accuracy = *(float *)&local_kernel->accuracy;
 	
 	/*update i_coord_age*/
 	struct timeval ltime;
    	do_gettimeofday(&ltime);
-   	dir_inode->i_coord_age = (u32)(ltime.tv_sec - (sys_tz.tz_minuteswest * 60));
+   	ei->i_coord_age = (u32)(ltime.tv_sec - (sys_tz.tz_minuteswest * 60));
 
 	return 0;
 }
 
 static int ext3_dir_get_gps_location(struct inode *dir_inode, struct gps_location *loc)
 {
-	*(int *)&loc->latitude = dir_inode->i_latitude;
-	*(int *)&loc->longitude = dir_inode->i_longitude;
-	*(int *)&loc->accuracy = dir_inode->i_accurary;
+	struct ext3_inode_info *ei = EXT3_I(dir_inode);
+	*(double *)&loc->latitude = ei->i_latitude;
+	*(double *)&loc->longitude = ei->i_longitude;
+	*(float *)&loc->accuracy = ei->i_accuracy;
 	
 	return 0;
 }
