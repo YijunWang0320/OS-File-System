@@ -309,10 +309,10 @@ struct ext3_inode {
 	} osd2;				/* OS dependent 2 */
 	__le16	i_extra_isize;
 	__le16	i_pad1;
-	__u64	i_latitude;
-	__u64	i_longitude;
-	__u32	i_accurary;
-	__u32	i_coord_age;
+	__le64	i_latitude;
+	__le64	i_longitude;
+	__le32	i_accuracy;
+	__le32	i_coord_age;
 };
 
 #define i_size_high	i_dir_acl
@@ -618,6 +618,10 @@ struct ext3_inode_info {
 	atomic_t i_datasync_tid;
 
 	struct inode vfs_inode;
+	__le64	i_latitude;
+	__le64	i_longitude;
+	__le32	i_accuracy;
+	__le32	i_coord_age;
 };
 
 /*
