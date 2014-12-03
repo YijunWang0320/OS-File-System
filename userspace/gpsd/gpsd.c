@@ -7,6 +7,14 @@
 
 int main(int argc, char *argv[])
 {
+	uid_t uid, euid;
+	
+	uid = getuid();
+	euid = geteuid();
+	if (uid < 0 || uid != euid) {
+		printf("ERROR: only root user could run daemon!\n");
+		exit(EXIT_FAILURE);
+	}
 	FILE *fp= NULL;
 	struct gps_location * gpsl;
 	pid_t pid = 0;
