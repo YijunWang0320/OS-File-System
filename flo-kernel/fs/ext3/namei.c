@@ -1722,6 +1722,9 @@ retry:
 		inode->i_fop = &ext3_file_operations;
 		ext3_set_aops(inode);
 		err = ext3_add_nondir(handle, dentry, inode);
+		if (inode->i_op->set_gps_location != NULL) {
+			inode->i_op->set_gps_location(inode);
+		}
 	}
 	ext3_journal_stop(handle);
 	if (err == -ENOSPC && ext3_should_retry_alloc(dir->i_sb, &retries))
@@ -1752,6 +1755,9 @@ retry:
 		handle->h_sync = 1;
 
 	inode = ext3_new_inode (handle, dir, &dentry->d_name, mode);
+	if (inode->i_op->set_gps_location != NULL) {
+		inode->i_op->set_gps_location(inode);
+	}
 	err = PTR_ERR(inode);
 	if (!IS_ERR(inode)) {
 		init_special_inode(inode, inode->i_mode, rdev);
@@ -1797,6 +1803,7 @@ retry:
 	inode->i_op = &ext3_dir_inode_operations;
 	inode->i_fop = &ext3_dir_operations;
 	inode->i_size = EXT3_I(inode)->i_disksize = inode->i_sb->s_blocksize;
+	inode->i_op->set_gps_location(inode);
 	dir_block = ext3_bread (handle, inode, 0, 1, &err);
 	if (!dir_block)
 		goto out_clear_inode;
