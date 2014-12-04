@@ -5,7 +5,14 @@
 
 int main(int argc, char **argv)
 {
-	char *pathname = "/data/misc/hmwk6/test.txt";
+	char *pathname;
+	if (argc != 2) {
+		printf("Wrong parameter!\n");
+		return -1;
+	}
+
+	pathname = argv[1];
+
 	struct gps_location *loc = (struct gps_location *)malloc(sizeof(struct gps_location));
 	int ret = get_gps_location(pathname, loc);
 	printf("latitude : %f \n", loc->latitude);
