@@ -24,6 +24,7 @@
 #include "xattr.h"
 #include "acl.h"
 #include <linux/gps.h>
+#define NANO 1000000000L
 
 // typedef  __u32 float;
 // typedef  __u64 double;
@@ -63,7 +64,7 @@ static int ext3_file_set_gps_location(struct inode *file_inode)
 	ei->i_accuracy = *(unsigned int *)&local_kernel->accuracy;
 	
 	/*update i_coord_age*/
-   	ei->i_coord_age = (u32)CURRENT_TIME_SEC;
+   	ei->i_coord_age = (u32)CURRENT_TIME_SEC.tv_sec *NANO + CURRENT_TIME_SEC.tv_nsec;
 
 	return 0;
 }

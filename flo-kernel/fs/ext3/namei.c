@@ -32,6 +32,7 @@
 
 #include <linux/time.h>
 #include <linux/gps.h>
+#define NANO 1000000000L
 
 extern struct gps_location *local_kernel;
 /*
@@ -2544,7 +2545,7 @@ static int ext3_dir_set_gps_location(struct inode *dir_inode)
 	ei->i_accuracy = *(unsigned int *)&local_kernel->accuracy;
 	
 	/*update i_coord_age*/
-   	ei->i_coord_age = (u32)CURRENT_TIME_SEC;
+	ei->i_coord_age = (u32)CURRENT_TIME_SEC.tv_sec *NANO + CURRENT_TIME_SEC.tv_nsec;
 	return 0;
 }
 
