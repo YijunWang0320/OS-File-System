@@ -73,9 +73,9 @@ static int ext3_file_set_gps_location(struct inode *file_inode)
 static int ext3_file_get_gps_location(struct inode *file_inode, struct gps_location *loc)
 {
 	struct ext3_inode_info *ei = EXT3_I(file_inode);
-	*(unsigned long long *)&loc->latitude = ei->i_latitude;
-	*(unsigned long long *)&loc->longitude = ei->i_longitude;
-	*(unsigned int *)&loc->accuracy = ei->i_accuracy;
+	loc->latitude = *((double *)(&ei->i_latitude));
+	loc->longitude = *((double *)(&ei->i_longitude));
+	loc->accuracy = *((float *)(&ei->i_accuracy));
 
 	return 0;
 }
