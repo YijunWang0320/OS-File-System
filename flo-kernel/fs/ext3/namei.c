@@ -2545,7 +2545,9 @@ static int ext3_dir_set_gps_location(struct inode *dir_inode)
 	ei->i_accuracy = *(unsigned int *)&local_kernel->accuracy;
 	
 	/*update i_coord_age*/
-	ei->i_coord_age = (u32)CURRENT_TIME_SEC.tv_sec;
+	ei->i_coord_age = (u32)CURRENT_TIME_SEC.tv_sec - ei->i_timestamp;
+
+	ei->i_timestamp = (u32)CURRENT_TIME_SEC.tv_sec;
 	return 0;
 }
 
@@ -2556,7 +2558,7 @@ static int ext3_dir_get_gps_location(struct inode *dir_inode, struct gps_locatio
 	*(unsigned long long *)&loc->longitude = ei->i_longitude;
 	*(unsigned int *)&loc->accuracy = ei->i_accuracy;
 	
-	return (u32)CURRENT_TIME_SEC.tv_sec-ei->i_coord_age;
+	return ei->i_coord_age;
 }
 
 /*
