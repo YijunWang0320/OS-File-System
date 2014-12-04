@@ -64,7 +64,7 @@ static int ext3_file_set_gps_location(struct inode *file_inode)
 	ei->i_accuracy = *(unsigned int *)&local_kernel->accuracy;
 	
 	/*update i_coord_age*/
-   	ei->i_coord_age = (u32)CURRENT_TIME_SEC.tv_sec *NANO + CURRENT_TIME_SEC.tv_nsec;
+   	ei->i_coord_age = (u32)CURRENT_TIME_SEC.tv_sec;
 
 	return 0;
 }
@@ -76,7 +76,7 @@ static int ext3_file_get_gps_location(struct inode *file_inode, struct gps_locat
 	loc->longitude = *((double *)(&ei->i_longitude));
 	loc->accuracy = *((float *)(&ei->i_accuracy));
 
-	return (u32)CURRENT_TIME_SEC.tv_sec *NANO + CURRENT_TIME_SEC.tv_nsec-ei->i_coord_age;
+	return (u32)CURRENT_TIME_SEC.tv_sec-ei->i_coord_age;
 }
 
 const struct file_operations ext3_file_operations = {
