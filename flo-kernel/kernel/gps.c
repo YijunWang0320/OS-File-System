@@ -48,40 +48,52 @@ SYSCALL_DEFINE(set_gps_location) (struct gps_location *loc) {
 
 SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	struct gps_location __user *, loc) {
-	if (pathname == NULL || loc == NULL)
+	if (pathname == NULL || loc == NULL){
+		printk("pathname == NULL || loc == NULL");
 		return -EINVAL;
+	}
 
 	struct gps_location loc_k;
 	char *pathname_k;
 
 	pathname_k = kmalloc((PATH_MAX+1)*sizeof(char), GFP_KERNEL);
-	if (pathname_k == NULL)
+	if (pathname_k == NULL) {
+		printk("pathname_k == NULL");
 		return -ENOMEM;
+	}
 	int cpy_ret;
 
 	cpy_ret = strncpy_from_user(pathname_k, pathname, PATH_MAX+1);
 	if (cpy_ret < 0) {
+		printk("cpy_ret < 0");
 		kfree(pathname_k);
 		return -EFAULT;
 	} else if (cpy_ret >= PATH_MAX + 1) {
+		printk("cpy_ret >= PATH_MAX + 1");
 		kfree(pathname_k);
 		return -EINVAL;
 	}
 	struct file * kfile;
 
 	kfile = filp_open(pathname_k, O_RDWR, 0);
-	if (IS_ERR(kfile))
+	if (IS_ERR(kfile)){
+		printk("IS_ERR(kfile)");
 		return -EINVAL;
+	}
 	struct inode *filenode;
 	filenode = kfile->f_path.dentry->d_inode;
 
 	int getret;
-	if (filenode == NULL)
+	if (filenode == NULL){
+		printk("filenode == NULL");
 		return -EINVAL;
+	}
 	if (filenode->i_op->get_gps_location != NULL)
 		getret = filenode->i_op->get_gps_location(filenode, loc);
-	else
+	else {
+		printk("filenode->i_op->get_gps_location == NULL");
 		return -EINVAL;
+	}
 	kfree(pathname_k);
 	return 0;
 }
