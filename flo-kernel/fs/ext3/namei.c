@@ -2546,19 +2546,18 @@ static int ext3_dir_set_gps_location(struct inode *dir_inode)
 	/*update i_coord_age*/
 	struct timeval ltime;
    	do_gettimeofday(&ltime);
-   	ei->i_coord_age = (u32)(ltime.tv_sec - (sys_tz.tz_minuteswest * 60))-ei->i_coord_age;
-
+   	ei->i_coord_age = (u32)CURRENT_TIME_SEC;
 	return 0;
 }
 
 static int ext3_dir_get_gps_location(struct inode *dir_inode, struct gps_location *loc)
 {
 	struct ext3_inode_info *ei = EXT3_I(dir_inode);
-	loc->latitude = *((double *)(&ei->i_latitude));
-	loc->longitude = *((double *)(&ei->i_longitude));
-	loc->accuracy = *((float *)(&ei->i_accuracy));
-
-	return ei->i_coord_age;
+	*(unsigned long long *)&loc->latitude = ei->i_latitude;
+	*(unsigned long long *)&loc->longitude = ei->i_longitude;
+	*(unsigned int *)&loc->accuracy = ei->i_accuracy;
+	
+	return CURRENT_TIME_SEC - ei->i_coord_age;
 }
 
 /*

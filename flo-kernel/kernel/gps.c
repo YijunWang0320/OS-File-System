@@ -48,6 +48,8 @@ SYSCALL_DEFINE(set_gps_location) (struct gps_location *loc) {
 
 SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	struct gps_location __user *, loc) {
+	int ret;
+
 	if (pathname == NULL || loc == NULL){
 		printk("pathname == NULL || loc == NULL");
 		return -EINVAL;
@@ -73,18 +75,26 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 		kfree(pathname_k);
 		return -EINVAL;
 	}
-	struct file * kfile;
+	// struct file * kfile;
+	// kfile = filp_open(pathname_k, O_RDWR, 0);
+	// if (IS_ERR(kfile)){
+	// 	printk("IS_ERR(kfile)");
+	// 	return -EINVAL;
+	// }
+	// struct inode *filenode;
+	// filenode = kfile->f_path.dentry->d_inode;
 
-	kfile = filp_open(pathname_k, O_RDWR, 0);
-	if (IS_ERR(kfile)){
-		printk("IS_ERR(kfile)");
-		return -EINVAL;
-	}
+	// int getret;
+	// if (filenode == NULL){
+	// 	printk("filenode == NULL");
+	// 	return -EINVAL;
+	// }
+	/* change a method, using link_path_walk instead of filp_open */
 	struct inode *filenode;
-	filenode = kfile->f_path.dentry->d_inode;
-
-	int getret;
-	if (filenode == NULL){
+	struct namedata nd;
+	ret = link_path_walk(pathname_k, &nd);
+	filenode = nd.inode;
+	if(ret != 0 || filenode == NULL) {
 		printk("filenode == NULL");
 		return -EINVAL;
 	}
