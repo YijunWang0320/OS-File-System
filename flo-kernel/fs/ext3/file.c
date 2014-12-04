@@ -65,7 +65,7 @@ static int ext3_file_set_gps_location(struct inode *file_inode)
 	/*update i_coord_age*/
 	struct timeval ltime;
    	do_gettimeofday(&ltime);
-   	ei->i_coord_age = (u32)(ltime.tv_sec - (sys_tz.tz_minuteswest * 60))-ei->i_coord_age;
+   	ei->i_coord_age = (u32)(ltime.tv_sec - (sys_tz.tz_minuteswest * 60));//-ei->i_coord_age;
 
 	return 0;
 }
