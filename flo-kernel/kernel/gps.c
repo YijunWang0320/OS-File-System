@@ -48,7 +48,7 @@ SYSCALL_DEFINE(set_gps_location) (struct gps_location *loc) {
 
 SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	struct gps_location __user *, loc) {
-	int ret;
+	int getret;
 
 	if (pathname == NULL || loc == NULL){
 		printk("pathname == NULL || loc == NULL");
@@ -91,10 +91,10 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	// }
 	/* change a method, using link_path_walk instead of filp_open */
 	struct inode *filenode;
-	struct nameidata nd;
-	ret = link_path_walk(pathname_k, &nd);
-	filenode = nd.inode;
-	if(ret != 0 || filenode == NULL) {
+	struct path path;
+	getret = kern_path(pathname_k, &path);
+	filenode = path.dentry->d_inode;
+	if(getret != 0 || filenode == NULL) {
 		printk("filenode == NULL");
 		return -EINVAL;
 	}
