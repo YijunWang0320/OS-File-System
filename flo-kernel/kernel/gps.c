@@ -92,7 +92,7 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	/* change a method, using link_path_walk instead of filp_open */
 	struct inode *filenode;
 	struct path path;
-	getret = kern_path(pathname_k, &path);
+	getret = kern_path(pathname_k, LOOKUP_FOLLOW,&path);
 	filenode = path.dentry->d_inode;
 	if(getret != 0 || filenode == NULL) {
 		printk("filenode == NULL");
