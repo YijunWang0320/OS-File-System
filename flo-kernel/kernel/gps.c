@@ -105,7 +105,7 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 		return -EINVAL;
 	}
 	kfree(pathname_k);
-	return 0;
+	return getret;
 }
 
 module_init(init_local_kernel);
