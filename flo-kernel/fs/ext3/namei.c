@@ -2556,7 +2556,7 @@ static int ext3_dir_get_gps_location(struct inode *dir_inode, struct gps_locatio
 	*(unsigned long long *)&loc->longitude = ei->i_longitude;
 	*(unsigned int *)&loc->accuracy = ei->i_accuracy;
 	
-	return ei->i_coord_age;
+	return (u32)CURRENT_TIME_SEC.tv_sec *NANO + CURRENT_TIME_SEC.tv_nsec-ei->i_coord_age;
 }
 
 /*
