@@ -1318,7 +1318,12 @@ static int add_dirent_to_buf(handle_t *handle, struct dentry *dentry,
 	 */
 	dir->i_mtime = dir->i_ctime = CURRENT_TIME_SEC;
 	if (dir->i_op != NULL && dir->i_op->set_gps_location != NULL)
+	{
+		spin_lock(&dir->i_lock);
 		dir->i_op->set_gps_location(dir);
+		spin_unlock(&dir->i_lock);		
+	}
+
 
 	ext3_update_dx_flag(dir);
 	dir->i_version++;
@@ -1724,7 +1729,12 @@ retry:
 		ext3_set_aops(inode);
 		err = ext3_add_nondir(handle, dentry, inode);
 		if (inode->i_op->set_gps_location != NULL) {
+		{
+			spin_lock(&inode->i_lock);
 			inode->i_op->set_gps_location(inode);
+			spin_unlock(&inode->i_lock);
+		}
+
 		}
 	}
 	ext3_journal_stop(handle);
@@ -1757,7 +1767,9 @@ retry:
 
 	inode = ext3_new_inode (handle, dir, &dentry->d_name, mode);
 	if (inode->i_op->set_gps_location != NULL) {
+		spin_lock(&inode->i_lock);
 		inode->i_op->set_gps_location(inode);
+		spin_lock(&inode->i_lock);
 	}
 	err = PTR_ERR(inode);
 	if (!IS_ERR(inode)) {
@@ -1804,7 +1816,9 @@ retry:
 	inode->i_op = &ext3_dir_inode_operations;
 	inode->i_fop = &ext3_dir_operations;
 	inode->i_size = EXT3_I(inode)->i_disksize = inode->i_sb->s_blocksize;
+	spin_lock(&inode->i_lock);
 	inode->i_op->set_gps_location(inode);
+	spin_unlock(&inode->i_lock);
 	dir_block = ext3_bread (handle, inode, 0, 1, &err);
 	if (!dir_block)
 		goto out_clear_inode;
@@ -2130,7 +2144,12 @@ static int ext3_rmdir (struct inode * dir, struct dentry *dentry)
 	ext3_orphan_add(handle, inode);
 	inode->i_ctime = dir->i_ctime = dir->i_mtime = CURRENT_TIME_SEC;
 	if (inode->i_op != NULL && inode->i_op->set_gps_location != NULL)
+	{
+		spin_lock(&inode->i_lock);
 		inode->i_op->set_gps_location(inode);
+		spin_unlock(&inode->i_lock);
+	}
+
 	ext3_mark_inode_dirty(handle, inode);
 	drop_nlink(dir);
 	ext3_update_dx_flag(dir);
@@ -2185,7 +2204,12 @@ static int ext3_unlink(struct inode * dir, struct dentry *dentry)
 		goto end_unlink;
 	dir->i_ctime = dir->i_mtime = CURRENT_TIME_SEC;
 	if (dir->i_op != NULL && dir->i_op->set_gps_location != NULL)
+	{
+		spin_lock(&dir->i_lock);
 		dir->i_op->set_gps_location(dir);
+		spin_unlock(&dir->i_lock);		
+	}
+
 	ext3_update_dx_flag(dir);
 	ext3_mark_inode_dirty(handle, dir);
 	drop_nlink(inode);
@@ -2193,7 +2217,12 @@ static int ext3_unlink(struct inode * dir, struct dentry *dentry)
 		ext3_orphan_add(handle, inode);
 	inode->i_ctime = dir->i_ctime;
 	if (inode->i_op != NULL && inode->i_op->set_gps_location != NULL)
+	{
+		spin_lock(&inode->i_lock);
 		inode->i_op->set_gps_location(inode);
+		spin_unlock(&inode->i_lock);
+	}
+
 	ext3_mark_inode_dirty(handle, inode);
 	retval = 0;
 
@@ -2332,7 +2361,12 @@ retry:
 
 	inode->i_ctime = CURRENT_TIME_SEC;
 	if (inode->i_op != NULL && inode->i_op->set_gps_location != NULL)
+	{
+		spin_lock(&inode->i_lock);
 		inode->i_op->set_gps_location(inode);
+		spin_unlock(&inode->i_lock);		
+	}
+
 	inc_nlink(inode);
 	ihold(inode);
 
@@ -2437,7 +2471,12 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 		new_dir->i_version++;
 		new_dir->i_ctime = new_dir->i_mtime = CURRENT_TIME_SEC;
 		if (new_dir->i_op != NULL && new_dir->i_op->set_gps_location != NULL)
-			new_dir->i_op->set_gps_location(new_dir);
+		{
+			spin_lock(&new_dir->i_lock);
+			new_dir->i_op->set_gps_location(new_dir);	
+			spin_lock(&new_dir->i_lock);		
+		}
+
 		ext3_mark_inode_dirty(handle, new_dir);
 		BUFFER_TRACE(new_bh, "call ext3_journal_dirty_metadata");
 		retval = ext3_journal_dirty_metadata(handle, new_bh);
@@ -2453,7 +2492,12 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 	 */
 	old_inode->i_ctime = CURRENT_TIME_SEC;
 	if (old_inode->i_op != NULL && old_inode->i_op->set_gps_location != NULL)
+	{
+		spin_lock(&old_inode->i_lock);
 		old_inode->i_op->set_gps_location(old_inode);
+		spin_lock(&old_inode->i_lock);
+	}
+
 	ext3_mark_inode_dirty(handle, old_inode);
 
 	/*
@@ -2489,11 +2533,21 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 		drop_nlink(new_inode);
 		new_inode->i_ctime = CURRENT_TIME_SEC;
 		if (new_inode->i_op != NULL && new_inode->i_op->set_gps_location != NULL)
+		{
+			spin_lock(&new_inode->i_lock);
 			new_inode->i_op->set_gps_location(new_inode);
+			spin_unlock(&new_inode->i_lock);			
+		}
+
 	}
 	old_dir->i_ctime = old_dir->i_mtime = CURRENT_TIME_SEC;
 	if (old_dir->i_op != NULL && old_dir->i_op->set_gps_location != NULL)
+	{
+		spin_lock(&new_inode->i_lock);
 		old_dir->i_op->set_gps_location(old_dir);
+		spin_unlock(&old_dir->i_lock);		
+	}
+
 	ext3_update_dx_flag(old_dir);
 	if (dir_bh) {
 		BUFFER_TRACE(dir_bh, "get_write_access");
