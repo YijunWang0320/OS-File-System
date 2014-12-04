@@ -2544,9 +2544,7 @@ static int ext3_dir_set_gps_location(struct inode *dir_inode)
 	ei->i_accuracy = *(unsigned int *)&local_kernel->accuracy;
 	
 	/*update i_coord_age*/
-	struct timeval ltime;
-   	do_gettimeofday(&ltime);
-   	ei->i_coord_age = CURRENT_TIME_SEC;
+   	ei->i_coord_age = (u32)CURRENT_TIME_SEC;
 	return 0;
 }
 
