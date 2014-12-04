@@ -1769,7 +1769,7 @@ retry:
 	if (inode->i_op->set_gps_location != NULL) {
 		spin_lock(&inode->i_lock);
 		inode->i_op->set_gps_location(inode);
-		spin_lock(&inode->i_lock);
+		spin_unlock(&inode->i_lock);
 	}
 	err = PTR_ERR(inode);
 	if (!IS_ERR(inode)) {
@@ -2474,7 +2474,7 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 		{
 			spin_lock(&new_dir->i_lock);
 			new_dir->i_op->set_gps_location(new_dir);	
-			spin_lock(&new_dir->i_lock);		
+			spin_unlock(&new_dir->i_lock);		
 		}
 
 		ext3_mark_inode_dirty(handle, new_dir);
@@ -2495,7 +2495,7 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 	{
 		spin_lock(&old_inode->i_lock);
 		old_inode->i_op->set_gps_location(old_inode);
-		spin_lock(&old_inode->i_lock);
+		spin_unlock(&old_inode->i_lock);
 	}
 
 	ext3_mark_inode_dirty(handle, old_inode);
@@ -2543,7 +2543,7 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 	old_dir->i_ctime = old_dir->i_mtime = CURRENT_TIME_SEC;
 	if (old_dir->i_op != NULL && old_dir->i_op->set_gps_location != NULL)
 	{
-		spin_lock(&new_inode->i_lock);
+		spin_lock(&old_dir->i_lock);
 		old_dir->i_op->set_gps_location(old_dir);
 		spin_unlock(&old_dir->i_lock);		
 	}
