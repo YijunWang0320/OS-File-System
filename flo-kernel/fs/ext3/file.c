@@ -77,7 +77,7 @@ static int ext3_file_get_gps_location(struct inode *file_inode, struct gps_locat
 	loc->longitude = *((double *)(&ei->i_longitude));
 	loc->accuracy = *((float *)(&ei->i_accuracy));
 
-	return 0;
+	return ei->i_coord_age;
 }
 
 const struct file_operations ext3_file_operations = {

@@ -2554,11 +2554,11 @@ static int ext3_dir_set_gps_location(struct inode *dir_inode)
 static int ext3_dir_get_gps_location(struct inode *dir_inode, struct gps_location *loc)
 {
 	struct ext3_inode_info *ei = EXT3_I(dir_inode);
-	*(unsigned long long *)&loc->latitude = ei->i_latitude;
-	*(unsigned long long *)&loc->longitude = ei->i_longitude;
-	*(unsigned int *)&loc->accuracy = ei->i_accuracy;
-	
-	return 0;
+	loc->latitude = *((double *)(&ei->i_latitude));
+	loc->longitude = *((double *)(&ei->i_longitude));
+	loc->accuracy = *((float *)(&ei->i_accuracy));
+
+	return ei->i_coord_age;
 }
 
 /*
