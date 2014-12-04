@@ -198,7 +198,8 @@ ext3_set_acl(handle_t *handle, struct inode *inode, int type,
 					return error;
 				else {
 					inode->i_ctime = CURRENT_TIME_SEC;
-					inode->i_op->set_gps_location(inode);
+					if (inode->i_op != NULL && inode->i_op->set_gps_location != NULL)
+						inode->i_op->set_gps_location(inode);
 					ext3_mark_inode_dirty(handle, inode);
 					if (error == 0)
 						acl = NULL;

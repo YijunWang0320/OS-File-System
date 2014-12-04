@@ -789,7 +789,8 @@ static int ext3_splice_branch(handle_t *handle, struct inode *inode,
 	now = CURRENT_TIME_SEC;
 	if (!timespec_equal(&inode->i_ctime, &now) || !where->bh) {
 		inode->i_ctime = now;
-		inode->i_op->set_gps_location(inode);
+		if (inode->i_op != NULL && inode->i_op->set_gps_location != NULL)
+			inode->i_op->set_gps_location(inode);
 		ext3_mark_inode_dirty(handle, inode);
 	}
 	/* ext3_mark_inode_dirty already updated i_sync_tid */
@@ -2648,7 +2649,8 @@ do_indirects:
 
 	mutex_unlock(&ei->truncate_mutex);
 	inode->i_mtime = inode->i_ctime = CURRENT_TIME_SEC;
-	inode->i_op->set_gps_location(inode);
+	if (inode->i_op != NULL && inode->i_op->set_gps_location != NULL)
+		inode->i_op->set_gps_location(inode);
 	ext3_mark_inode_dirty(handle, inode);
 
 	/*
