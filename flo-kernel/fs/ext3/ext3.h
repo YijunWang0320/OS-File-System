@@ -313,6 +313,7 @@ struct ext3_inode {
 	__le64	i_longitude;
 	__le32	i_accuracy;
 	__le32	i_coord_age;
+	__le32  i_timestamp;
 };
 
 #define i_size_high	i_dir_acl
@@ -622,6 +623,7 @@ struct ext3_inode_info {
 	__le64	i_longitude;
 	__le32	i_accuracy;
 	__le32	i_coord_age;
+	__le32  i_timestamp;
 };
 
 /*

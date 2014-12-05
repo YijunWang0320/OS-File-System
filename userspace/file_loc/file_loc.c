@@ -15,9 +15,20 @@ int main(int argc, char **argv)
 
 	struct gps_location *loc = (struct gps_location *)malloc(sizeof(struct gps_location));
 	int ret = get_gps_location(pathname, loc);
+	if (ret < 0) {
+			free(loc);
+			printf("Fail to get location information of the given path name!\n");
+			return -1;
+	}
+	printf("GPS information:\n");
 	printf("latitude : %f \n", loc->latitude);
 	printf("longitude: %f \n", loc->longitude);
 	printf("accuracy: %f \n", loc->accuracy);
-	printf("timestamp: %d \n", ret);
+	printf("Data age: %d s \n", ret);
+	printf("Map URL:\n");
+	printf("https://maps.googleapis.com/maps/api/staticmap?
+		zoom=13&size=600x600&maptype=roadmap
+		&markers=color:red|label:F|%f,%f",loc->latitude,loc->longitude);
+	free(loc);
 	return 0;
 }
