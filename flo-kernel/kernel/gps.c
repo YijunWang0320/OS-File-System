@@ -5,9 +5,6 @@
 #include <linux/uaccess.h>
 #include <linux/limits.h>
 #include <linux/err.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdlib.h>
 
 struct gps_location *local_kernel;
 
