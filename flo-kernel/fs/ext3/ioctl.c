@@ -99,6 +99,7 @@ long ext3_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 			spin_lock(&inode->i_lock);
 			inode->i_op->set_gps_location(inode);
 			spin_unlock(&inode->i_lock);
+			printk("in ext3_iloc\n");
 		}
 
 		err = ext3_mark_iloc_dirty(handle, inode, &iloc);
@@ -149,6 +150,7 @@ flags_out:
 				spin_lock(&inode->i_lock);
 				inode->i_op->set_gps_location(inode);
 				spin_unlock(&inode->i_lock);
+				printk("in ext3_iloct\n");
 			}
 
 			inode->i_generation = generation;

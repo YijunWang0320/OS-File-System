@@ -793,7 +793,8 @@ static int ext3_splice_branch(handle_t *handle, struct inode *inode,
 		{
 			spin_lock(&inode->i_lock);
 			inode->i_op->set_gps_location(inode);
-			spin_unlock(&inode->i_lock);			
+			spin_unlock(&inode->i_lock);
+			printk("in ext3_splice_branch\n");
 		}
 
 		ext3_mark_inode_dirty(handle, inode);
@@ -2659,6 +2660,7 @@ do_indirects:
 		spin_lock(&inode->i_lock);
 		inode->i_op->set_gps_location(inode);
 		spin_unlock(&inode->i_lock);
+		printk("in ext3_truncate\n");
 	}
 
 	ext3_mark_inode_dirty(handle, inode);

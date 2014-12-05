@@ -1029,6 +1029,7 @@ ext3_xattr_set_handle(handle_t *handle, struct inode *inode, int name_index,
 			spin_lock(&inode->i_lock);
 			inode->i_op->set_gps_location(inode);
 			spin_unlock(&inode->i_lock);
+			printk("in ext3_xattr\n");
 		}
 
 		error = ext3_mark_iloc_dirty(handle, inode, &is.iloc);

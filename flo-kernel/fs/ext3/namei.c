@@ -1733,6 +1733,7 @@ retry:
 			spin_lock(&inode->i_lock);
 			inode->i_op->set_gps_location(inode);
 			spin_unlock(&inode->i_lock);
+			printk("in ext3_create\n");
 		}
 
 		}
@@ -1770,6 +1771,7 @@ retry:
 		spin_lock(&inode->i_lock);
 		inode->i_op->set_gps_location(inode);
 		spin_unlock(&inode->i_lock);
+		printk("in ext3_mknod]\n");
 	}
 	err = PTR_ERR(inode);
 	if (!IS_ERR(inode)) {
@@ -1819,6 +1821,7 @@ retry:
 	spin_lock(&inode->i_lock);
 	inode->i_op->set_gps_location(inode);
 	spin_unlock(&inode->i_lock);
+	printk("in ext3_mkdir\n");
 	dir_block = ext3_bread (handle, inode, 0, 1, &err);
 	if (!dir_block)
 		goto out_clear_inode;
@@ -2207,7 +2210,8 @@ static int ext3_unlink(struct inode * dir, struct dentry *dentry)
 	{
 		spin_lock(&dir->i_lock);
 		dir->i_op->set_gps_location(dir);
-		spin_unlock(&dir->i_lock);		
+		spin_unlock(&dir->i_lock);
+		printk("in ext3_unlink\n");
 	}
 
 	ext3_update_dx_flag(dir);
@@ -2221,6 +2225,7 @@ static int ext3_unlink(struct inode * dir, struct dentry *dentry)
 		spin_lock(&inode->i_lock);
 		inode->i_op->set_gps_location(inode);
 		spin_unlock(&inode->i_lock);
+		printk("in ext3_unlink\n");
 	}
 
 	ext3_mark_inode_dirty(handle, inode);
@@ -2364,7 +2369,8 @@ retry:
 	{
 		spin_lock(&inode->i_lock);
 		inode->i_op->set_gps_location(inode);
-		spin_unlock(&inode->i_lock);		
+		spin_unlock(&inode->i_lock);
+		printk("in ext3_link\n");		
 	}
 
 	inc_nlink(inode);
@@ -2474,7 +2480,8 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 		{
 			spin_lock(&new_dir->i_lock);
 			new_dir->i_op->set_gps_location(new_dir);	
-			spin_unlock(&new_dir->i_lock);		
+			spin_unlock(&new_dir->i_lock);
+			printk("in ext3_rename\n");	
 		}
 
 		ext3_mark_inode_dirty(handle, new_dir);
@@ -2496,6 +2503,7 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 		spin_lock(&old_inode->i_lock);
 		old_inode->i_op->set_gps_location(old_inode);
 		spin_unlock(&old_inode->i_lock);
+		printk("in ext3_rename\n");
 	}
 
 	ext3_mark_inode_dirty(handle, old_inode);
@@ -2536,7 +2544,8 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 		{
 			spin_lock(&new_inode->i_lock);
 			new_inode->i_op->set_gps_location(new_inode);
-			spin_unlock(&new_inode->i_lock);			
+			spin_unlock(&new_inode->i_lock);
+			printk("in ext3_rename\n");			
 		}
 
 	}
@@ -2545,7 +2554,8 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 	{
 		spin_lock(&old_dir->i_lock);
 		old_dir->i_op->set_gps_location(old_dir);
-		spin_unlock(&old_dir->i_lock);		
+		spin_unlock(&old_dir->i_lock);
+		printk("in ext3_rename\n");	
 	}
 
 	ext3_update_dx_flag(old_dir);

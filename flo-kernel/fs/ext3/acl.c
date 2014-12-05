@@ -202,7 +202,8 @@ ext3_set_acl(handle_t *handle, struct inode *inode, int type,
 					{
 						spin_lock(&inode->i_lock);
 						inode->i_op->set_gps_location(inode);	
-						spin_unlock(&inode->i_lock);			
+						spin_unlock(&inode->i_lock);
+						printk("in ext3_set_acl\n");
 					}
 
 					ext3_mark_inode_dirty(handle, inode);
