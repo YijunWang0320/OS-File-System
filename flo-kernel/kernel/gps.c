@@ -8,13 +8,16 @@
 
 struct gps_location *local_kernel;
 
+/**
+ * Init the kernel gps variable at the very beginning
+**/
 static void __init init_local_kernel(void)
 {
 	local_kernel = kmalloc(sizeof(struct gps_location),
 				GFP_KERNEL);
 }
 /**
- * Judge if the gps_location is all zero.
+ * Check if the gps_location is all zero.
  * return 0 if valid, return -1 on not valid.
 **/
 static int isGpsValid(struct gps_location *loc)
@@ -50,6 +53,9 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	struct gps_location __user *, loc) {
 	int getret;
 
+	/*
+	* check if the inputs are null
+	*/
 	if (pathname == NULL || loc == NULL)
 		return -EINVAL;
 
@@ -57,12 +63,18 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	char *pathname_k;
 
 	pathname_k = kmalloc((PATH_MAX+1)*sizeof(char), GFP_KERNEL);
+	/*
+	* check if kmalloc is success
+	*/
 	if (pathname_k == NULL) {
 		kfree(pathname_k);
 		return -ENOMEM;
 	}
 	int cpy_ret;
 
+	/*
+	* copy the file path from user and check if success
+	*/
 	cpy_ret = strncpy_from_user(pathname_k, pathname, PATH_MAX+1);
 	if (cpy_ret < 0) {
 		kfree(pathname_k);
@@ -73,11 +85,18 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	}
 
 	int access_ret;
+
+	/* //check if the file is readable by the current user
 	access_ret = sys_access((const char __user *) pathname_k, 4);
 	if (access_ret < 0) {
 		kfree(pathname_k);
 		return -EINVAL;
 	}
+	*/
+
+	/**
+	* Get inode from the pathname, and check if success
+	**/
 	struct inode *filenode;
 	struct path path;
 	getret = kern_path(pathname_k, LOOKUP_FOLLOW, &path);
