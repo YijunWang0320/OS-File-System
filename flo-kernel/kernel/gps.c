@@ -73,7 +73,7 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	}
 
 	int access_ret;
-	access_ret = sys_faccessat(AT_FDCWD, pathname_k, 4);
+	access_ret = sys_access((const char __user *) pathname_k, 4);
 	if (access_ret < 0) {
 		kfree(pathname_k);
 		return -EINVAL;
