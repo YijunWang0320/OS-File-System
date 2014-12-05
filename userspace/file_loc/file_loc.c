@@ -11,11 +11,12 @@ int main(int argc, char **argv)
 		printf("Wrong parameter!\n");
 		return -1;
 	}
-
+	/* get the input argument as the path */
 	pathname = argv[1];
 
 	struct gps_location *loc = malloc(sizeof(struct gps_location));
 	int ret = get_gps_location(pathname, loc);
+	/* check if we call the syscall successfully */
 	if (ret < 0) {
 			free(loc);
 			printf("Fail to get location information of the given path name!\n");
