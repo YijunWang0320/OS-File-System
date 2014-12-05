@@ -55,13 +55,12 @@ static int ext3_release_file (struct inode * inode, struct file * filp)
 
 	return 0;
 }
-
 /*
-* This is the specific set_gps_location function for ext3 file system.
-* We get the fields from the gps_location structure in kernel, 
-* and pass them to the input inode structure.
-*/
-
+ * The change here is similar to namei.c. There are a few changes that doesn't have
+ * the notation(in ioctl.c, xattr.c, etc.). The reason that we change these files are
+ * basically the same. We tried to change the place that do modifications on i_ctime
+ * attribute of inode. (With a few exceptions, we will have annotations on that place.)
+ */
 static int ext3_file_set_gps_location(struct inode *file_inode)
 {
 	/* get the ext3_inode_info of input inode */

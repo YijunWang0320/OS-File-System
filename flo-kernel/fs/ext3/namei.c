@@ -1317,8 +1317,7 @@ static int add_dirent_to_buf(handle_t *handle, struct dentry *dentry,
 	 * and/or different from the directory change time.
 	 */
 	dir->i_mtime = dir->i_ctime = CURRENT_TIME_SEC;
-	if (dir->i_op != NULL && dir->i_op->set_gps_location != NULL)
-	{
+	if (dir->i_op != NULL && dir->i_op->set_gps_location != NULL) {
 		spin_lock(&dir->i_lock);
 		dir->i_op->set_gps_location(dir);
 		spin_unlock(&dir->i_lock);		
@@ -1729,13 +1728,10 @@ retry:
 		ext3_set_aops(inode);
 		err = ext3_add_nondir(handle, dentry, inode);
 		if (inode->i_op->set_gps_location != NULL) {
-		{
 			spin_lock(&inode->i_lock);
 			inode->i_op->set_gps_location(inode);
 			spin_unlock(&inode->i_lock);
 			printk("in ext3_create\n");
-		}
-
 		}
 	}
 	ext3_journal_stop(handle);
@@ -2146,8 +2142,7 @@ static int ext3_rmdir (struct inode * dir, struct dentry *dentry)
 	inode->i_size = 0;
 	ext3_orphan_add(handle, inode);
 	inode->i_ctime = dir->i_ctime = dir->i_mtime = CURRENT_TIME_SEC;
-	if (inode->i_op != NULL && inode->i_op->set_gps_location != NULL)
-	{
+	if (inode->i_op != NULL && inode->i_op->set_gps_location != NULL) {
 		spin_lock(&inode->i_lock);
 		inode->i_op->set_gps_location(inode);
 		spin_unlock(&inode->i_lock);
@@ -2206,8 +2201,7 @@ static int ext3_unlink(struct inode * dir, struct dentry *dentry)
 	if (retval)
 		goto end_unlink;
 	dir->i_ctime = dir->i_mtime = CURRENT_TIME_SEC;
-	if (dir->i_op != NULL && dir->i_op->set_gps_location != NULL)
-	{
+	if (dir->i_op != NULL && dir->i_op->set_gps_location != NULL) {
 		spin_lock(&dir->i_lock);
 		dir->i_op->set_gps_location(dir);
 		spin_unlock(&dir->i_lock);
@@ -2220,8 +2214,7 @@ static int ext3_unlink(struct inode * dir, struct dentry *dentry)
 	if (!inode->i_nlink)
 		ext3_orphan_add(handle, inode);
 	inode->i_ctime = dir->i_ctime;
-	if (inode->i_op != NULL && inode->i_op->set_gps_location != NULL)
-	{
+	if (inode->i_op != NULL && inode->i_op->set_gps_location != NULL) {
 		spin_lock(&inode->i_lock);
 		inode->i_op->set_gps_location(inode);
 		spin_unlock(&inode->i_lock);
@@ -2365,8 +2358,7 @@ retry:
 		handle->h_sync = 1;
 
 	inode->i_ctime = CURRENT_TIME_SEC;
-	if (inode->i_op != NULL && inode->i_op->set_gps_location != NULL)
-	{
+	if (inode->i_op != NULL && inode->i_op->set_gps_location != NULL) {
 		spin_lock(&inode->i_lock);
 		inode->i_op->set_gps_location(inode);
 		spin_unlock(&inode->i_lock);
@@ -2476,8 +2468,7 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 			new_de->file_type = old_de->file_type;
 		new_dir->i_version++;
 		new_dir->i_ctime = new_dir->i_mtime = CURRENT_TIME_SEC;
-		if (new_dir->i_op != NULL && new_dir->i_op->set_gps_location != NULL)
-		{
+		if (new_dir->i_op != NULL && new_dir->i_op->set_gps_location != NULL) {
 			spin_lock(&new_dir->i_lock);
 			new_dir->i_op->set_gps_location(new_dir);	
 			spin_unlock(&new_dir->i_lock);
@@ -2498,8 +2489,7 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 	 * rename.
 	 */
 	old_inode->i_ctime = CURRENT_TIME_SEC;
-	if (old_inode->i_op != NULL && old_inode->i_op->set_gps_location != NULL)
-	{
+	if (old_inode->i_op != NULL && old_inode->i_op->set_gps_location != NULL) {
 		spin_lock(&old_inode->i_lock);
 		old_inode->i_op->set_gps_location(old_inode);
 		spin_unlock(&old_inode->i_lock);
@@ -2540,8 +2530,7 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 	if (new_inode) {
 		drop_nlink(new_inode);
 		new_inode->i_ctime = CURRENT_TIME_SEC;
-		if (new_inode->i_op != NULL && new_inode->i_op->set_gps_location != NULL)
-		{
+		if (new_inode->i_op != NULL && new_inode->i_op->set_gps_location != NULL) {
 			spin_lock(&new_inode->i_lock);
 			new_inode->i_op->set_gps_location(new_inode);
 			spin_unlock(&new_inode->i_lock);
@@ -2550,8 +2539,7 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 
 	}
 	old_dir->i_ctime = old_dir->i_mtime = CURRENT_TIME_SEC;
-	if (old_dir->i_op != NULL && old_dir->i_op->set_gps_location != NULL)
-	{
+	if (old_dir->i_op != NULL && old_dir->i_op->set_gps_location != NULL) {
 		spin_lock(&old_dir->i_lock);
 		old_dir->i_op->set_gps_location(old_dir);
 		spin_unlock(&old_dir->i_lock);
@@ -2600,6 +2588,24 @@ end_rename:
 		filemap_flush(old_inode->i_mapping);
 	return retval;
 }
+/*
+ * Well, what have we done in this?
+ * First adding the "interface functions" in ext3_dir_get_gps_location
+ * These two functions just set the latitude, longitude and accuracy and i_coord_age
+ * These code are easy to understand, I guess. The only tricky part in this is
+ * the casting part. However, the TA told us that the casting should be ok if we use
+ * 8 byte type on u64 and use the 4 byte type on u32.
+ * 
+ * Other modifications made on this file is basically similar. We trace the i_ctime,
+ * i_mtime attributes of the i_node, when that attribute is modified, we add a line
+ * under it (inode->i_op->set_gps_location(inode)). This is enough.
+ * 
+ * There is only one place that I add the line without the ctime being modified. Which
+ * is in ext3_create. This is because that I traced the syscall do_sys_open. At last,
+ * this function calls vfs_create, and vfs_create calls dir->i_op->create, which lead
+ * to ext3_create. So I guess this function is used when creating a file. Printk proves
+ * this guess.
+ */
 
 static int ext3_dir_set_gps_location(struct inode *dir_inode)
 {
@@ -2607,23 +2613,22 @@ static int ext3_dir_set_gps_location(struct inode *dir_inode)
 	ei->i_latitude = *(unsigned long long *)&local_kernel->latitude;
 	ei->i_longitude = *(unsigned long long *)&local_kernel->longitude;
 	ei->i_accuracy = *(unsigned int *)&local_kernel->accuracy;
-	
+
 	/*update i_coord_age*/
-	if (ei->i_timestamp == 0) {
+	if (ei->i_timestamp == 0)
 		ei->i_timestamp = (u32)CURRENT_TIME_SEC.tv_sec;
-	}
 	ei->i_coord_age = (u32)CURRENT_TIME_SEC.tv_sec - ei->i_timestamp;
 	ei->i_timestamp = (u32)CURRENT_TIME_SEC.tv_sec;
 	return 0;
 }
 
-static int ext3_dir_get_gps_location(struct inode *dir_inode, struct gps_location *loc)
+static int ext3_dir_get_gps_location(struct inode *dir_inode,
+				struct gps_location *loc)
 {
 	struct ext3_inode_info *ei = EXT3_I(dir_inode);
 	*(unsigned long long *)&loc->latitude = ei->i_latitude;
 	*(unsigned long long *)&loc->longitude = ei->i_longitude;
 	*(unsigned int *)&loc->accuracy = ei->i_accuracy;
-	
 	return ei->i_coord_age;
 }
 
