@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 	* be executed.
 	**/
 	uid_t uid, euid;
-	
+
 	uid = getuid();
 	euid = geteuid();
 	if (uid < 0 || uid != euid) {
@@ -24,24 +24,23 @@ int main(int argc, char *argv[])
 	 * Exit the parent process to make sure just one
 	 * daemon is running.
 	**/
-	FILE *fp= NULL;
-	struct gps_location * gpsl;
+	FILE *fp = NULL;
+	struct gps_location *gpsl;
 	pid_t pid = 0;
 	pid_t sid = 0;
 	pid = fork();
-	if(pid < 0) {
-		printf("fork failed. \n");
+	if (pid < 0) {
+		printf("fork failed.\n");
 		exit(EXIT_FAILURE);
 	}
 
-	if(pid > 0) {
+	if (pid > 0)
 		exit(EXIT_SUCCESS);
-	}
 	umask(0);
 	sid = setsid();
 	if (sid < 0)
 		exit(EXIT_FAILURE);
-	if ((chdir("/"))< 0)
+	if ((chdir("/")) < 0)
 		exit(EXIT_FAILURE);
 	close(STDIN_FILENO);
 	close(STDOUT_FILENO);
@@ -56,15 +55,14 @@ int main(int argc, char *argv[])
 	 * Get the gps location from the text file writen by the user app.
 	 * Write gps into the kernel useing set_gps_location syscall every
 	 * one second.
-	 * 
+	 *
 	**/
-	while(1) {
+	while (1) {
 		fp = fopen("/data/media/0/gps_location.txt", "rt");
 		if (fp == NULL) {
 			free(gpsl);
 			exit(EXIT_FAILURE);
 		}
-		
 		read = getline(&line, &len, fp);
 		if (read != -1)
 			gpsl->latitude = strtod(line, NULL);
