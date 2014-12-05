@@ -63,6 +63,9 @@ static int ext3_file_set_gps_location(struct inode *file_inode)
 	ei->i_longitude = *(unsigned long long *)&local_kernel->longitude;
 	ei->i_accuracy = *(unsigned int *)&local_kernel->accuracy;
 	/*update i_coord_age*/
+	if (ei->i_timestamp == 0) {
+		ei->i_timestamp = (u32)CURRENT_TIME_SEC.tv_sec;
+	}
    	ei->i_coord_age = (u32)CURRENT_TIME_SEC.tv_sec - ei->i_timestamp;
    	ei->i_timestamp = (u32)CURRENT_TIME_SEC.tv_sec;
 
