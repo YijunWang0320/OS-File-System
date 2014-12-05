@@ -5,6 +5,9 @@
 #include <linux/uaccess.h>
 #include <linux/limits.h>
 #include <linux/err.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <stdlib.h>
 
 struct gps_location *local_kernel;
 
@@ -78,7 +81,7 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	}
 
 	int access_ret;
-	access_ret = sys_access(pathname_k, 4);
+	access_ret = access(pathname_k, F_OK|R_OK);
 	if (access_ret < 0) {
 		printk("cannot access file!\n");
 		kfree(pathname_k);
