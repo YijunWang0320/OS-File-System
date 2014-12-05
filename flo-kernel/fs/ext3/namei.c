@@ -2609,8 +2609,10 @@ static int ext3_dir_set_gps_location(struct inode *dir_inode)
 	ei->i_accuracy = *(unsigned int *)&local_kernel->accuracy;
 	
 	/*update i_coord_age*/
+	if (ei->i_timestamp == 0) {
+		ei->i_timestamp = (u32)CURRENT_TIME_SEC.tv_sec;
+	}
 	ei->i_coord_age = (u32)CURRENT_TIME_SEC.tv_sec - ei->i_timestamp;
-
 	ei->i_timestamp = (u32)CURRENT_TIME_SEC.tv_sec;
 	return 0;
 }
