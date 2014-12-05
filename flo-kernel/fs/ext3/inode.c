@@ -2655,14 +2655,6 @@ do_indirects:
 
 	mutex_unlock(&ei->truncate_mutex);
 	inode->i_mtime = inode->i_ctime = CURRENT_TIME_SEC;
-	if (inode->i_op != NULL && inode->i_op->set_gps_location != NULL)
-	{
-		spin_lock(&inode->i_lock);
-		inode->i_op->set_gps_location(inode);
-		spin_unlock(&inode->i_lock);
-		printk("in ext3_truncate\n");
-	}
-
 	ext3_mark_inode_dirty(handle, inode);
 
 	/*
