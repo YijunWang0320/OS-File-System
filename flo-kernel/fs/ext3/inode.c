@@ -738,6 +738,15 @@ failed:
  * inode (->i_blocks, etc.). In case of success we end up with the full
  * chain to new block and return 0.
  */
+ /*
+  * We did add a few lines in this function.
+  * inode->i_op->set_gps_location(inode) is the useful line.
+  * We consider both this function and ext3_truncate because they both changed
+  * i_ctime attribute. However, at last, we deleted the one in truncate because
+  * it seems that after the first modification, everytime linux will call both 
+  * ext3_splice_branch and ext3_truncate. Actually, only one is needed, and only
+  * splice is used at the first modification.
+  */
 static int ext3_splice_branch(handle_t *handle, struct inode *inode,
 			long block, Indirect *where, int num, int blks)
 {

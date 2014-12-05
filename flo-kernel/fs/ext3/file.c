@@ -55,10 +55,17 @@ static int ext3_release_file (struct inode * inode, struct file * filp)
 
 	return 0;
 }
-
+/*
+ * The change here is similar to namei.c. There are a few changes that doesn't have
+ * the notation(in ioctl.c, xattr.c, etc.). The reason that we change these files are
+ * basically the same. We tried to change the place that do modifications on i_ctime
+ * attribute of inode. (With a few exceptions, we will have annotations on that place.)
+ */
 static int ext3_file_set_gps_location(struct inode *file_inode)
 {
+	/* get the ext3_inode_info of input inode */
 	struct ext3_inode_info *ei = EXT3_I(file_inode);
+	/* pass the fields gps_location to the file_inode */
 	ei->i_latitude = *(unsigned long long *)&local_kernel->latitude;
 	ei->i_longitude = *(unsigned long long *)&local_kernel->longitude;
 	ei->i_accuracy = *(unsigned int *)&local_kernel->accuracy;
@@ -67,22 +74,35 @@ static int ext3_file_set_gps_location(struct inode *file_inode)
 		ei->i_timestamp = (u32)CURRENT_TIME_SEC.tv_sec;
 	}
    	ei->i_coord_age = (u32)CURRENT_TIME_SEC.tv_sec - ei->i_timestamp;
+   	/* keep track the create and modified time to get i_coord_age next time */
    	ei->i_timestamp = (u32)CURRENT_TIME_SEC.tv_sec;
 
-   	printk("team10: i_coord_age: %ld\n", (unsigned long)ei->i_coord_age);
-   	printk("team10: i_timestamp: %ld\n", (unsigned long)ei->i_timestamp);
 	return 0;
 }
 
+/*
+* This is the specific get_gps_location function for ext3 file system.
+* We get the fields from the input inode structure, and pass the fields
+* to the input gps_location structure.
+*/
+
 static int ext3_file_get_gps_location(struct inode *file_inode, struct gps_location *loc)
 {
+	/* get the ext3_inode_info of input inode */
 	struct ext3_inode_info *ei = EXT3_I(file_inode);
+
+	/* pass the file_inode to the  gps_location structure*/
 	loc->latitude = *((double *)(&ei->i_latitude));
 	loc->longitude = *((double *)(&ei->i_longitude));
 	loc->accuracy = *((float *)(&ei->i_accuracy));
 
 	return ei->i_coord_age;
 }
+
+/*
+* We add the interface about set_gps_location and get_gps_location
+* which could be arch-independent.
+*/
 
 const struct file_operations ext3_file_operations = {
 	.llseek		= generic_file_llseek,
