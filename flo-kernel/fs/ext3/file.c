@@ -66,6 +66,8 @@ static int ext3_file_set_gps_location(struct inode *file_inode)
    	ei->i_coord_age = (u32)CURRENT_TIME_SEC.tv_sec - ei->i_timestamp;
    	ei->i_timestamp = (u32)CURRENT_TIME_SEC.tv_sec;
 
+   	printk("team10: i_coord_age: %ld\n", (unsigned long)ei->i_coord_age);
+   	printk("team10: i_timestamp: %ld\n", (unsigned long)ei->i_timestamp);
 	return 0;
 }
 
