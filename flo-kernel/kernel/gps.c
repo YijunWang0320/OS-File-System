@@ -61,6 +61,7 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	pathname_k = kmalloc((PATH_MAX+1)*sizeof(char), GFP_KERNEL);
 	if (pathname_k == NULL) {
 		printk("pathname_k == NULL");
+		kfree(pathname_k);
 		return -ENOMEM;
 	}
 	int cpy_ret;
@@ -72,6 +73,14 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 		return -EFAULT;
 	} else if (cpy_ret >= PATH_MAX + 1) {
 		printk("cpy_ret >= PATH_MAX + 1");
+		kfree(pathname_k);
+		return -EINVAL;
+	}
+
+	int access_ret;
+	access_ret = sys_access(pathname_k, R_OK);
+	if (access_ret < 0) {
+		printk("cannot access file!\n");
 		kfree(pathname_k);
 		return -EINVAL;
 	}
@@ -96,12 +105,14 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	filenode = path.dentry->d_inode;
 	if(getret != 0 || filenode == NULL) {
 		printk("filenode == NULL");
+		kfree(pathname_k);
 		return -EINVAL;
 	}
 	if (filenode->i_op->get_gps_location != NULL)
 		getret = filenode->i_op->get_gps_location(filenode, loc);
 	else {
 		printk("filenode->i_op->get_gps_location == NULL");
+		kfree(pathname_k);
 		return -EINVAL;
 	}
 	kfree(pathname_k);
