@@ -78,7 +78,7 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	}
 
 	int access_ret;
-	access_ret = sys_access(pathname_k, R_OK);
+	access_ret = sys_access(pathname_k, 4);
 	if (access_ret < 0) {
 		printk("cannot access file!\n");
 		kfree(pathname_k);
