@@ -34,15 +34,14 @@ static void __init init_local_kernel(void)
 **/
 static int isGpsValid(struct gps_location *loc)
 {
-	if (loc == NULL)
-		return -EINVAL;
 	double double0;
 	float float0;
 	u64 lat, lng;
 	u32 acc;
 	u64 dzero;
 	u32 fzero;
-	
+	if (loc == NULL)
+		return -EINVAL;	
 	double0 = 0;
 	float0 = 0;
 	dzero = *((unsigned long long *)(&double0));
@@ -55,7 +54,8 @@ static int isGpsValid(struct gps_location *loc)
 	return 0;
 }
 
-SYSCALL_DEFINE(set_gps_location) (struct gps_location *loc) {
+SYSCALL_DEFINE(set_gps_location) (struct gps_location *loc)
+{
 	int ret;
 
 	if (isGpsValid(loc) != 0)
@@ -68,18 +68,21 @@ SYSCALL_DEFINE(set_gps_location) (struct gps_location *loc) {
 }
 
 SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
-	struct gps_location __user *, loc) {
+	struct gps_location __user *, loc)
+{
 	int getret;
-
+	char *pathname_k;
+	int cpy_ret;
+	int access_ret;
+	struct inode *filenode;
+	struct path path;
+	struct gps_location * temploc;
+	int copyturet;
 	/*
 	* check if the inputs are null
 	*/
 	if (pathname == NULL || loc == NULL)
 		return -EINVAL;
-
-	struct gps_location loc_k;
-	char *pathname_k;
-
 	pathname_k = kmalloc((PATH_MAX+1)*sizeof(char), GFP_KERNEL);
 	/*
 	* check if kmalloc is success
@@ -88,8 +91,6 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 		kfree(pathname_k);
 		return -ENOMEM;
 	}
-	int cpy_ret;
-	int access_ret;
 	/*
 	* copy the file path from user and check if success
 	*/
@@ -104,9 +105,6 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	/**
 	* Get inode from the pathname, and check if success
 	**/
-	struct inode *filenode;
-	struct path path;
-
 	getret = kern_path(pathname_k, LOOKUP_FOLLOW, &path);
 	filenode = path.dentry->d_inode;
 	if (getret != 0 || filenode == NULL) {
@@ -120,9 +118,6 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 		kfree(pathname_k);
 		return -EINVAL;
 	}
-
-	struct gps_location * temploc;
-
 	temploc = kmalloc(sizeof(struct gps_location), GFP_KERNEL);
 	if (temploc == NULL) {
 		kfree(pathname_k);
@@ -141,9 +136,6 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 		kfree(temploc);
 		return -EINVAL;
 	}
-
-	int copyturet;
-
 	copyturet = copy_to_user(loc, temploc, sizeof(struct gps_location));
 	if (copyturet<0) {
 		kfree(pathname_k);
