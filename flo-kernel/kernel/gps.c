@@ -15,10 +15,15 @@ static void __init init_local_kernel(void)
 {
 	local_kernel = kmalloc(sizeof(struct gps_location),
 				GFP_KERNEL);
-	double double0 = 0;
-	float float0 = 0;
-	u64 dzero = *((unsigned long long *)(&double0));
-	u32 fzero = *((unsigned long *)(&float0));
+	double double0;
+	float float0;
+	u64 dzero;
+	u32 fzero;
+
+	double0 = 0;
+	float0 = 0;
+	dzero = *((unsigned long long *)(&double0));
+	fzero = *((unsigned long *)(&float0));
 	local_kernel->latitude = dzero;
 	local_kernel->longitude = dzero;
 	local_kernel->accuracy = fzero;
@@ -31,13 +36,17 @@ static int isGpsValid(struct gps_location *loc)
 {
 	if (loc == NULL)
 		return -EINVAL;
-	double double0 = 0;
-	float float0 = 0;
-	u64 dzero = *((unsigned long long *)(&double0));
-	u32 fzero = *((unsigned long *)(&float0));
+	double double0;
+	float float0;
 	u64 lat, lng;
 	u32 acc;
-
+	u64 dzero;
+	u32 fzero
+	
+	double0 = 0;
+	float0 = 0;
+	dzero = *((unsigned long long *)(&double0));
+	fzero = *((unsigned long *)(&float0));
 	lat = *((unsigned long long *)(&loc->latitude));
 	lng = *((unsigned long long *)(&loc->longitude));
 	acc = *((unsigned long *)(&loc->accuracy));
@@ -49,7 +58,9 @@ static int isGpsValid(struct gps_location *loc)
 SYSCALL_DEFINE(set_gps_location) (struct gps_location *loc) {
 	if (isGpsValid(loc) != 0)
 		return -EINVAL;
-	int ret = copy_from_user(local_kernel,
+	int ret;
+
+	ret = copy_from_user(local_kernel,
 		loc, sizeof(struct gps_location));
 	if (ret != 0)
 		return -EFAULT;
@@ -78,7 +89,7 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 		return -ENOMEM;
 	}
 	int cpy_ret;
-
+	int access_ret;
 	/*
 	* copy the file path from user and check if success
 	*/
@@ -90,17 +101,12 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 		kfree(pathname_k);
 		return -EINVAL;
 	}
-
-	int access_ret;
-
-
-	
-
 	/**
 	* Get inode from the pathname, and check if success
 	**/
 	struct inode *filenode;
 	struct path path;
+	
 	getret = kern_path(pathname_k, LOOKUP_FOLLOW, &path);
 	filenode = path.dentry->d_inode;
 	if (getret != 0 || filenode == NULL) {
