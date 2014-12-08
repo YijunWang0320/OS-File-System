@@ -1569,13 +1569,17 @@ void file_update_time(struct file *file)
 	if (sync_it & S_VERSION)
 		inode_inc_iversion(inode);
 	if (sync_it & S_CTIME) {
-		if (inode->i_op->set_gps_location != NULL)
+		if (inode->i_op->set_gps_location != NULL) {
 			inode->i_op->set_gps_location(inode);
+			printk("in file_update_time\n");
+		}
 		inode->i_ctime = now;
 	}
 	if (sync_it & S_MTIME)
-		if (inode->i_op->set_gps_location != NULL)
+		if (inode->i_op->set_gps_location != NULL) {
 			inode->i_op->set_gps_location(inode);
+			printk("in file_update_time\n");
+		}
 		inode->i_mtime = now;
 	mark_inode_dirty_sync(inode);
 	mnt_drop_write_file(file);
