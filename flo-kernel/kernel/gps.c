@@ -11,7 +11,7 @@ struct gps_location *local_kernel;
 /**
  * Init the kernel gps variable at the very beginning
 **/
-static void __init init_local_kernel(void)
+static int __init init_local_kernel(void)
 {
 	double double0;
 	float float0;
