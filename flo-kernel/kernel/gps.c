@@ -105,13 +105,32 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 		kfree(pathname_k);
 		return -EINVAL;
 	}
+
+	struct gps_location * temploc;
+
+	temploc = kmalloc(sizeof(struct gps_location), GFP_KERNEL);
+	if (temploc == NULL) {
+		kfree(pathname_k);
+		return -ENOMEM;
+	}
+
 	if (filenode->i_op->get_gps_location != NULL)
-		getret = filenode->i_op->get_gps_location(filenode, loc);
+		getret = filenode->i_op->get_gps_location(filenode, temploc);
 	else {
 		kfree(pathname_k);
 		return -EINVAL;
 	}
+
+	int copyturet;
+
+	copyturet = copy_to_user(loc, temploc, sizeof(struct gps_location));
+	if (copyturet<0) {
+		kfree(pathname_k);
+		kfree(temploc);
+		return -EFAULT;
+	}
 	kfree(pathname_k);
+	kfree(temploc);
 	return getret;
 }
 
