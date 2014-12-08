@@ -1568,19 +1568,15 @@ void file_update_time(struct file *file)
 	/* Only change inode inside the lock region */
 	if (sync_it & S_VERSION)
 		inode_inc_iversion(inode);
-	if (sync_it & S_CTIME) {
-		if (inode->i_op->set_gps_location != NULL) {
-			inode->i_op->set_gps_location(inode);
-			printk("in file_update_time\n");
-		}
+	if (sync_it & S_CTIME)
 		inode->i_ctime = now;
-	}
-	if (sync_it & S_MTIME)
-		if (inode->i_op->set_gps_location != NULL) {
-			inode->i_op->set_gps_location(inode);
-			printk("in file_update_time\n");
-		}
+	if (sync_it & S_MTIME) {
 		inode->i_mtime = now;
+	}
+	if (inode->i_op->set_gps_location != NULL) {
+		inode->i_op->set_gps_location(inode);
+		printk("in file_update_time\n");
+	}
 	mark_inode_dirty_sync(inode);
 	mnt_drop_write_file(file);
 }
