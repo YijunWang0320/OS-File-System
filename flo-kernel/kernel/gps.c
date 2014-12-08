@@ -13,13 +13,12 @@ struct gps_location *local_kernel;
 **/
 static void __init init_local_kernel(void)
 {
-	local_kernel = kmalloc(sizeof(struct gps_location),
-				GFP_KERNEL);
 	double double0;
 	float float0;
 	u64 dzero;
 	u32 fzero;
-
+	local_kernel = kmalloc(sizeof(struct gps_location),
+				GFP_KERNEL);
 	double0 = 0;
 	float0 = 0;
 	dzero = *((unsigned long long *)(&double0));
@@ -146,5 +145,4 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	kfree(temploc);
 	return getret;
 }
-
 module_init(init_local_kernel);
