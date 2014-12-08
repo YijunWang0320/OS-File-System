@@ -93,12 +93,7 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 
 	int access_ret;
 
-	//check if the file is readable by the current user
-	access_ret = sys_access((const char *) pathname_k, 4);
-	if (access_ret < 0) {
-		kfree(pathname_k);
-		return -EINVAL;
-	}
+
 	
 
 	/**
@@ -109,6 +104,13 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 	getret = kern_path(pathname_k, LOOKUP_FOLLOW, &path);
 	filenode = path.dentry->d_inode;
 	if (getret != 0 || filenode == NULL) {
+		kfree(pathname_k);
+		return -EINVAL;
+	}
+
+	//check if the file is readable by the current user
+	access_ret = inode_permission(filenode, 4);
+	if (access_ret < 0) {
 		kfree(pathname_k);
 		return -EINVAL;
 	}
