@@ -15,6 +15,13 @@ static void __init init_local_kernel(void)
 {
 	local_kernel = kmalloc(sizeof(struct gps_location),
 				GFP_KERNEL);
+	double double0 = 0;
+	float float0 = 0;
+	u64 dzero = *((unsigned long long *)(&double0));
+	u32 fzero = *((unsigned long *)(&float0));
+	local_kernel->latitude = dzero;
+	local_kernel->longitude = dzero;
+	local_kernel->accuracy = fzero;
 }
 /**
  * Check if the gps_location is all zero.
