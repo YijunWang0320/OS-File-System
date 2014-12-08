@@ -40,7 +40,7 @@ static int isGpsValid(struct gps_location *loc)
 }
 
 SYSCALL_DEFINE(set_gps_location) (struct gps_location *loc) {
-	if (isGpsValid(loc) == -1)
+	if (isGpsValid(loc) != 0)
 		return -EINVAL;
 	int ret = copy_from_user(local_kernel,
 		loc, sizeof(struct gps_location));
@@ -118,6 +118,12 @@ SYSCALL_DEFINE2(get_gps_location, const char __user *, pathname,
 		getret = filenode->i_op->get_gps_location(filenode, temploc);
 	else {
 		kfree(pathname_k);
+		return -EINVAL;
+	}
+
+	if(isGpsValid(temploc) != 0){
+		kfree(pathname_k);
+		kfree(temploc);
 		return -EINVAL;
 	}
 
