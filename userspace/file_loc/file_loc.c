@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 	/* check if we call the syscall successfully */
 	if (ret < 0) {
 			free(loc);
-			printf("Fail to get location information of the given path name!\n");
+			printf("Fail to get location information!\n");
 			return -1;
 	}
 	printf("GPS information:\n");
